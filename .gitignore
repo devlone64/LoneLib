@@ -1,0 +1,12 @@
+.idea/
+out/
+
+build/
+.gradle/
+
+modules/bukkit/common/gradle.properties
+
+# bukkit
+modules/bukkit/plugin/build/
+modules/bukkit/common/build/
+# bukkit

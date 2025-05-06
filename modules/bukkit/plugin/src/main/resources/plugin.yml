@@ -1,0 +1,5 @@
+name: LoneLib
+main: dev.lone64.LoneLib.Main
+author: lone64
+version: '@version@'
+api-version: '1.13'
