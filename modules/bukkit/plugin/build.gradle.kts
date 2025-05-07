@@ -8,7 +8,6 @@ plugins {
 }
 
 group = "dev.lone64.LoneLib"
-version = "1.0.1"
 
 dependencies {
     implementation(project(":modules:bukkit:common"))
@@ -18,7 +17,7 @@ dependencies {
 
 tasks {
     shadowJar {
-        archiveFileName.set("LoneLib-${version}.jar")
+        archiveFileName.set("LoneLib-bukkit.jar")
     }
 
     withType<ProcessResources> {
