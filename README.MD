@@ -22,6 +22,6 @@ LoneLib은 현재 마인크래프트 버전으로 **1.12 ~ 1.21.5**까지 지원
 <dependency>
     <groupId>dev.lone64</groupId>
     <artifactId>LoneLib</artifactId>
-    <version>1.0.1</version>
+    <version>VERSION</version>
 </dependency>
 ```

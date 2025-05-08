@@ -95,12 +95,14 @@ public interface JsonConfiguration {
 
         public JsonConfigurationImpl(Plugin plugin, String path) {
             super(plugin, path);
-            this.config = JsonUtil.loadJson(this.getFile());
+            var resource = JsonUtil.loadJson(this.getPlugin(), this.getPath());
+            this.config = resource != null ? resource : new JsonObject();
         }
 
         public JsonConfigurationImpl(Plugin plugin, String dir, String path) {
             super(plugin, dir, path);
-            this.config = JsonUtil.loadJson(this.getFile());
+            var resource = JsonUtil.loadJson(this.getPlugin(), this.getPath());
+            this.config = resource != null ? resource : new JsonObject();
         }
 
         @Override

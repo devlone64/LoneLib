@@ -53,12 +53,14 @@ public interface PropertiesConfiguration {
 
         public PropertiesConfigurationImpl(Plugin plugin, String path) {
             super(plugin, path);
-            this.config = PropertiesUtil.loadProperties(this.getFile());
+            var resource = PropertiesUtil.loadProperties(this.getPlugin(), this.getPath());
+            this.config = resource != null ? resource : new Properties();
         }
 
         public PropertiesConfigurationImpl(Plugin plugin, String dir, String path) {
             super(plugin, dir, path);
-            this.config = PropertiesUtil.loadProperties(this.getFile());
+            var resource = PropertiesUtil.loadProperties(this.getPlugin(), this.getPath());
+            this.config = resource != null ? resource : new Properties();
         }
 
         @Override

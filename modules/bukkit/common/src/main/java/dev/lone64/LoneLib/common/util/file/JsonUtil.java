@@ -35,6 +35,7 @@ public class JsonUtil {
             return null;
         }
     }
+
     public static JsonObject loadJson(Plugin plugin, String path) {
         var resource = plugin.getResource(path);
         if (resource == null) return null;

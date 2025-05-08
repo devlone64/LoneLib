@@ -36,6 +36,7 @@ public class PropertiesUtil {
             return properties;
         }
     }
+
     public static Properties loadProperties(Plugin plugin, String path) {
         var properties = new Properties();
         try (var in = plugin.getResource(path)) {
