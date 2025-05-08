@@ -43,6 +43,8 @@ public interface JsonConfiguration {
     void setIfAbuse(String key, Enum<?> value);
     void setIfAbuse(String key, JsonElement value);
 
+    void remove(String key);
+
     Object serialized(Class<?> type, Object value);
     Object deserialized(Class<?> type, Object value);
 
@@ -228,6 +230,25 @@ public interface JsonConfiguration {
         @Override
         public void setIfAbuse(String key, JsonElement value) {
             if (!this.has(key)) this.set(key, value);
+        }
+
+        @Override
+        public void remove(String key) {
+            var parts = key.split("\\.");
+            var current = this.config != null ? this.config : new JsonObject();
+            for (int i = 0; i < parts.length - 1; i++) {
+                var part = parts[i];
+                if (!current.has(part) || !current.get(part).isJsonObject()) {
+                    current.add(part, new JsonObject());
+                }
+                current = current.getAsJsonObject(part);
+            }
+
+            var path = parts[parts.length - 1];
+            if (this.has(key)) {
+                current.remove(path);
+                JsonUtil.saveJson(this.getFile(), this.config);
+            }
         }
 
         @Override

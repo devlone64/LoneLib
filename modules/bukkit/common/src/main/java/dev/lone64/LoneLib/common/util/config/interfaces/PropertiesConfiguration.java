@@ -21,6 +21,8 @@ public interface PropertiesConfiguration {
     void set(String key, Object value);
     void setIfAbuse(String key, Object value);
 
+    void remove(String key);
+
     Object get(String key);
     Object get(String key, Object def);
 
@@ -89,6 +91,11 @@ public interface PropertiesConfiguration {
         @Override
         public void setIfAbuse(String key, Object value) {
             if (!this.has(key)) this.set(key, value);
+        }
+
+        @Override
+        public void remove(String key) {
+            if (this.has(key)) this.config.remove(key);
         }
 
         @Override
