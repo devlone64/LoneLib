@@ -104,7 +104,7 @@ public interface YmlConfiguration {
                     var value = this.config.get(key);
                     if ((value != null && field.get(this) == null) || (value != null && field.get(this) != null && value.equals(field.get(this))))
                         continue;
-                    value = field.get(object);
+                    value = this.serialized(field.get(object));
                     if (value == null) continue;
                     this.config.set(key, serialize(value));
                     this.config.save(this.getFile());

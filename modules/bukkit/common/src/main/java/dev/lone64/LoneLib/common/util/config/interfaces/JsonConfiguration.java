@@ -16,7 +16,6 @@ import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.Plugin;
 
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.*;
 
@@ -47,48 +46,31 @@ public interface JsonConfiguration {
 
     JsonElement get(String key);
     JsonElement get(String key, JsonElement def);
-    JsonElement get(JsonElement src, String key);
-    JsonElement get(JsonElement src, String key, JsonElement def);
 
     String getString(String key);
     String getString(String key, String def);
-    String getString(JsonElement src, String key);
-    String getString(JsonElement src, String key, String def);
 
     Number getNumber(String key);
     Number getNumber(String key, Number def);
-    Number getNumber(JsonElement src, String key);
-    Number getNumber(JsonElement src, String key, Number def);
 
     boolean getBoolean(String key);
     boolean getBoolean(String key, boolean def);
-    boolean getBoolean(JsonElement src, String key);
-    boolean getBoolean(JsonElement src, String key, boolean def);
 
     UUID getUUID(String key);
     UUID getUUID(String key, UUID def);
-    UUID getUUID(JsonElement src, String key);
-    UUID getUUID(JsonElement src, String key, UUID def);
 
     Location getLocation(String key);
     Location getLocation(String key, Location def);
-    Location getLocation(JsonElement src, String key);
-    Location getLocation(JsonElement src, String key, Location def);
 
     Enum<?> getEnum(String key);
     Enum<?> getEnum(String key, Enum<?> def);
-    Enum<?> getEnum(JsonElement src, String key);
-    Enum<?> getEnum(JsonElement src, String key, Enum<?> def);
 
     JsonArray getArray(String key);
     JsonArray getArray(String key, JsonArray def);
-    JsonArray getArray(JsonElement src, String key);
-    JsonArray getArray(JsonElement src, String key, JsonArray def);
 
     List<String> list();
 
     boolean has(String key);
-    boolean has(JsonElement src, String key);
 
     class JsonConfigurationImpl extends Configuration implements JsonConfiguration {
         private JsonObject config;
@@ -130,7 +112,7 @@ public interface JsonConfiguration {
                     var field = entry.getKey();
                     var config = entry.getValue();
                     var path = config.path().isEmpty() ? field.getName().replace("_", "-") : config.path();
-                    var value = field.get(object);
+                    var value = this.serialized(field.get(object));
                     if (value == null) continue;
 
                     var jsonValue = new Gson().toJsonTree(value);
@@ -162,44 +144,53 @@ public interface JsonConfiguration {
 
         @Override
         public void set(String key, String value) {
-            this.config.addProperty(key, value);
-            JsonUtil.saveJson(this.getFile(), this.config);
+            this.set(key, new Gson().toJsonTree(value));
         }
 
         @Override
         public void set(String key, Number value) {
-            this.config.addProperty(key, value);
-            JsonUtil.saveJson(this.getFile(), this.config);
+            this.set(key, new Gson().toJsonTree(value));
         }
 
         @Override
         public void set(String key, Boolean value) {
-            this.config.addProperty(key, value);
-            JsonUtil.saveJson(this.getFile(), this.config);
+            this.set(key, new Gson().toJsonTree(value));
         }
 
         @Override
         public void set(String key, UUID value) {
-            this.config.addProperty(key, value.toString());
-            JsonUtil.saveJson(this.getFile(), this.config);
+            this.set(key, new Gson().toJsonTree(value.toString()));
         }
 
         @Override
         public void set(String key, Location value) {
-            this.config.addProperty(key, LocationUtil.serialize(value));
-            JsonUtil.saveJson(this.getFile(), this.config);
+            this.set(key, new Gson().toJsonTree(LocationUtil.serialize(value)));
         }
 
         @Override
         public void set(String key, Enum<?> value) {
-            this.config.addProperty(key, value.name());
-            JsonUtil.saveJson(this.getFile(), this.config);
+            this.set(key, new Gson().toJsonTree(value.name()));
         }
 
         @Override
         public void set(String key, JsonElement value) {
-            this.config.add(key, value);
-            JsonUtil.saveJson(this.getFile(), this.config);
+            var parts = key.split("\\.");
+            var current = this.config != null ? this.config : new JsonObject();
+            for (int i = 0; i < parts.length - 1; i++) {
+                var part = parts[i];
+                if (!current.has(part) || !current.get(part).isJsonObject()) {
+                    current.add(part, new JsonObject());
+                }
+                current = current.getAsJsonObject(part);
+            }
+
+            var path = parts[parts.length - 1];
+            var existing = current.get(path);
+            var jsonValue = new Gson().toJsonTree(value);
+            if (existing == null || !existing.equals(jsonValue)) {
+                current.add(path, jsonValue);
+                JsonUtil.saveJson(this.getFile(), this.config);
+            }
         }
 
         @Override
@@ -259,21 +250,20 @@ public interface JsonConfiguration {
 
         @Override
         public JsonElement get(String key, JsonElement def) {
-            var value = this.config.get(key);
-            if (value == null) return def;
-            return value;
-        }
+            var parts = key.split("\\.");
+            var current = this.config != null ? this.config : new JsonObject();
+            for (int i = 0; i < parts.length - 1; i++) {
+                var part = parts[i];
+                if (!current.has(part) || !current.get(part).isJsonObject()) {
+                    current.add(part, new JsonObject());
+                }
+                current = current.getAsJsonObject(part);
+            }
 
-        @Override
-        public JsonElement get(JsonElement src, String key) {
-            return this.get(src, key, null);
-        }
-
-        @Override
-        public JsonElement get(JsonElement src, String key, JsonElement def) {
-            var value = src.getAsJsonObject().get(key);
-            if (value == null) return def;
-            return value;
+            var path = parts[parts.length - 1];
+            var existing = current.get(path);
+            if (existing == null) return def;
+            return existing;
         }
 
         @Override
@@ -283,19 +273,7 @@ public interface JsonConfiguration {
 
         @Override
         public String getString(String key, String def) {
-            var value = this.config.get(key);
-            if (value == null) return def;
-            return value.getAsString();
-        }
-
-        @Override
-        public String getString(JsonElement src, String key) {
-            return this.getString(src, key, null);
-        }
-
-        @Override
-        public String getString(JsonElement src, String key, String def) {
-            var value = src.getAsJsonObject().get(key);
+            var value = this.get(key);
             if (value == null) return def;
             return value.getAsString();
         }
@@ -307,19 +285,7 @@ public interface JsonConfiguration {
 
         @Override
         public Number getNumber(String key, Number def) {
-            var value = this.config.get(key);
-            if (value == null) return def;
-            return value.getAsNumber();
-        }
-
-        @Override
-        public Number getNumber(JsonElement src, String key) {
-            return this.getNumber(src, key, null);
-        }
-
-        @Override
-        public Number getNumber(JsonElement src, String key, Number def) {
-            var value = src.getAsJsonObject().get(key);
+            var value = this.get(key);
             if (value == null) return def;
             return value.getAsNumber();
         }
@@ -331,19 +297,7 @@ public interface JsonConfiguration {
 
         @Override
         public boolean getBoolean(String key, boolean def) {
-            var value = this.config.get(key);
-            if (value == null) return def;
-            return value.getAsBoolean();
-        }
-
-        @Override
-        public boolean getBoolean(JsonElement src, String key) {
-            return this.getBoolean(src, key, false);
-        }
-
-        @Override
-        public boolean getBoolean(JsonElement src, String key, boolean def) {
-            var value = src.getAsJsonObject().get(key);
+            var value = this.get(key);
             if (value == null) return def;
             return value.getAsBoolean();
         }
@@ -355,19 +309,7 @@ public interface JsonConfiguration {
 
         @Override
         public UUID getUUID(String key, UUID def) {
-            var value = this.config.get(key);
-            if (value == null) return def;
-            return UUID.fromString(value.getAsString());
-        }
-
-        @Override
-        public UUID getUUID(JsonElement src, String key) {
-            return this.getUUID(src, key, null);
-        }
-
-        @Override
-        public UUID getUUID(JsonElement src, String key, UUID def) {
-            var value = src.getAsJsonObject().get(key);
+            var value = this.get(key);
             if (value == null) return def;
             return UUID.fromString(value.getAsString());
         }
@@ -379,19 +321,7 @@ public interface JsonConfiguration {
 
         @Override
         public Location getLocation(String key, Location def) {
-            var value = this.config.get(key);
-            if (value == null) return def;
-            return LocationUtil.deserialize(value.getAsString());
-        }
-
-        @Override
-        public Location getLocation(JsonElement src, String key) {
-            return this.getLocation(src, key, null);
-        }
-
-        @Override
-        public Location getLocation(JsonElement src, String key, Location def) {
-            var value = src.getAsJsonObject().get(key);
+            var value = this.get(key);
             if (value == null) return def;
             return LocationUtil.deserialize(value.getAsString());
         }
@@ -403,20 +333,7 @@ public interface JsonConfiguration {
 
         @Override
         public Enum<?> getEnum(String key, Enum<?> def) {
-            var value = this.config.get(key);
-            if (value == null) return def;
-            var classType = value.getAsString().getClass();
-            return EnumUtil.from(classType, value.getAsString());
-        }
-
-        @Override
-        public Enum<?> getEnum(JsonElement src, String key) {
-            return this.getEnum(src, key, null);
-        }
-
-        @Override
-        public Enum<?> getEnum(JsonElement src, String key, Enum<?> def) {
-            var value = src.getAsJsonObject().get(key);
+            var value = this.get(key);
             if (value == null) return def;
             var classType = value.getAsString().getClass();
             return EnumUtil.from(classType, value.getAsString());
@@ -429,19 +346,7 @@ public interface JsonConfiguration {
 
         @Override
         public JsonArray getArray(String key, JsonArray def) {
-            var value = this.config.get(key);
-            if (value == null) return def;
-            return value.getAsJsonArray();
-        }
-
-        @Override
-        public JsonArray getArray(JsonElement src, String key) {
-            return this.getArray(src, key, new JsonArray());
-        }
-
-        @Override
-        public JsonArray getArray(JsonElement src, String key, JsonArray def) {
-            var value = src.getAsJsonObject().get(key);
+            var value = this.get(key);
             if (value == null) return def;
             return value.getAsJsonArray();
         }
@@ -460,12 +365,18 @@ public interface JsonConfiguration {
 
         @Override
         public boolean has(String key) {
-            return this.config.has(key);
-        }
+            var parts = key.split("\\.");
+            var current = this.config != null ? this.config : new JsonObject();
+            for (int i = 0; i < parts.length - 1; i++) {
+                var part = parts[i];
+                if (!current.has(part) || !current.get(part).isJsonObject()) {
+                    current.add(part, new JsonObject());
+                }
+                current = current.getAsJsonObject(part);
+            }
 
-        @Override
-        public boolean has(JsonElement src, String key) {
-            return src.getAsJsonObject().has(key);
+            var path = parts[parts.length - 1];
+            return current.has(path);
         }
 
         private JsonElement serialize(Object value) {
