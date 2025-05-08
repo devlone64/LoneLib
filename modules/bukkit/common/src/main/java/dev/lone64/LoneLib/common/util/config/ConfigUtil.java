@@ -1,23 +1,21 @@
 package dev.lone64.LoneLib.common.util.config;
 
 import dev.lone64.LoneLib.common.util.config.interfaces.JsonConfiguration;
+import dev.lone64.LoneLib.common.util.config.interfaces.PropertiesConfiguration;
 import dev.lone64.LoneLib.common.util.config.interfaces.YmlConfiguration;
-import dev.lone64.LoneLib.common.util.config.interfaces.JsonConfiguration.JsonConfigurationImpl;
-import dev.lone64.LoneLib.common.util.config.interfaces.YmlConfiguration.YmlConfigurationImpl;
 import org.bukkit.plugin.Plugin;
 
 public class ConfigUtil {
-    public static YmlConfiguration loadYml(Plugin plugin, String path) {
-        return new YmlConfigurationImpl(plugin, path);
+    @SuppressWarnings("unchecked")
+    public static <C> C fetch(Class<C> type, Plugin plugin, String path) {
+        if (type == JsonConfiguration.class) return (C) JsonConfiguration.createConfig(plugin, path);
+        else if (type == PropertiesConfiguration.class) return (C) PropertiesConfiguration.createConfig(plugin, path);
+        return (C) YmlConfiguration.createConfig(plugin, path);
     }
-    public static YmlConfiguration loadYml(Plugin plugin, String dir, String path) {
-        return new YmlConfigurationImpl(plugin, dir, path);
-    }
-
-    public static JsonConfiguration loadJson(Plugin plugin, String path) {
-        return new JsonConfigurationImpl(plugin, path);
-    }
-    public static JsonConfiguration loadJson(Plugin plugin, String dir, String path) {
-        return new JsonConfigurationImpl(plugin, dir, path);
+    @SuppressWarnings("unchecked")
+    public static <C> C fetch(Class<C> type, Plugin plugin, String dir, String path) {
+        if (type == JsonConfiguration.class) return (C) JsonConfiguration.createConfig(plugin, dir, path);
+        else if (type == PropertiesConfiguration.class) return (C) PropertiesConfiguration.createConfig(plugin, dir, path);
+        return (C) YmlConfiguration.createConfig(plugin, dir, path);
     }
 }

@@ -95,12 +95,12 @@ public interface JsonConfiguration {
 
         public JsonConfigurationImpl(Plugin plugin, String path) {
             super(plugin, path);
-            this.config = JsonUtil.loadJson(plugin, path);
+            this.config = JsonUtil.loadJson(this.getFile());
         }
 
         public JsonConfigurationImpl(Plugin plugin, String dir, String path) {
             super(plugin, dir, path);
-            this.config = JsonUtil.loadJson(plugin, "%s/%s".formatted(dir, path));
+            this.config = JsonUtil.loadJson(this.getFile());
         }
 
         @Override
@@ -496,5 +496,13 @@ public interface JsonConfiguration {
             }
             return superclasses;
         }
+    }
+
+    static JsonConfiguration createConfig(Plugin plugin, String path) {
+        return new JsonConfigurationImpl(plugin, path);
+    }
+
+    static JsonConfiguration createConfig(Plugin plugin, String dir, String path) {
+        return new JsonConfigurationImpl(plugin, dir, path);
     }
 }

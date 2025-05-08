@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
 
-public interface PropConfiguration {
+public interface PropertiesConfiguration {
     boolean createNewFile();
     boolean deleteFile();
     boolean exists();
@@ -48,17 +48,17 @@ public interface PropConfiguration {
 
     Properties getConfig();
 
-    class PropConfigurationImpl extends Configuration implements PropConfiguration {
+    class PropertiesConfigurationImpl extends Configuration implements PropertiesConfiguration {
         private final Properties config;
 
-        public PropConfigurationImpl(Plugin plugin, String path) {
+        public PropertiesConfigurationImpl(Plugin plugin, String path) {
             super(plugin, path);
-            this.config = PropertiesUtil.loadProperties(plugin, path);
+            this.config = PropertiesUtil.loadProperties(this.getFile());
         }
 
-        public PropConfigurationImpl(Plugin plugin, String dir, String path) {
+        public PropertiesConfigurationImpl(Plugin plugin, String dir, String path) {
             super(plugin, dir, path);
-            this.config = PropertiesUtil.loadProperties(plugin, "%s/%s".formatted(dir, path));
+            this.config = PropertiesUtil.loadProperties(this.getFile());
         }
 
         @Override
@@ -194,5 +194,13 @@ public interface PropConfiguration {
         public Properties getConfig() {
             return this.config;
         }
+    }
+
+    static PropertiesConfiguration createConfig(Plugin plugin, String path) {
+        return new PropertiesConfigurationImpl(plugin, path);
+    }
+
+    static PropertiesConfiguration createConfig(Plugin plugin, String dir, String path) {
+        return new PropertiesConfigurationImpl(plugin, dir, path);
     }
 }

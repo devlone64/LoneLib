@@ -316,4 +316,12 @@ public interface YmlConfiguration {
             return superclasses;
         }
     }
+
+    static YmlConfiguration createConfig(Plugin plugin, String path) {
+        return new YmlConfigurationImpl(plugin, path);
+    }
+
+    static YmlConfiguration createConfig(Plugin plugin, String dir, String path) {
+        return new YmlConfigurationImpl(plugin, dir, path);
+    }
 }
