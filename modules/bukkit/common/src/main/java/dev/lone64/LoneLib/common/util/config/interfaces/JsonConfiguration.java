@@ -10,7 +10,9 @@ import dev.lone64.LoneLib.common.util.config.configuration.Configuration;
 import dev.lone64.LoneLib.common.util.file.JsonUtil;
 import dev.lone64.LoneLib.common.util.java.FileUtil;
 import dev.lone64.LoneLib.common.util.location.LocationUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
@@ -41,8 +43,8 @@ public interface JsonConfiguration {
     void setIfAbuse(String key, Enum<?> value);
     void setIfAbuse(String key, JsonElement value);
 
-    Object serialized(Object object);
-    Object deserialized(Object object);
+    Object serialized(Class<?> type, Object value);
+    Object deserialized(Class<?> type, Object value);
 
     JsonElement get(String key);
     JsonElement get(String key, JsonElement def);
@@ -112,7 +114,7 @@ public interface JsonConfiguration {
                     var field = entry.getKey();
                     var config = entry.getValue();
                     var path = config.path().isEmpty() ? field.getName().replace("_", "-") : config.path();
-                    var value = this.serialized(field.get(object));
+                    var value = this.serialized(field.getType(), field.get(object));
                     if (value == null) continue;
 
                     var jsonValue = new Gson().toJsonTree(value);
@@ -229,18 +231,24 @@ public interface JsonConfiguration {
         }
 
         @Override
-        public Object serialized(Object object) {
-            if (object instanceof ConfigurationSerializable src)
-                return src.serialize();
-            return object;
+        public Object serialized(Class<?> type, Object value) {
+            if (type.isEnum()) return EnumUtil.to(value);
+            else if (type == UUID.class) return value.toString();
+            else if (type == World.class) return ((World) value).getName();
+            else if (type == Location.class) return LocationUtil.serialize((Location) value);
+            else if (value instanceof ConfigurationSerializable) return ((ConfigurationSerializable) value).serialize();
+            return value;
         }
 
         @Override
-        public Object deserialized(Object object) {
-            var type = object.getClass();
-            if (object instanceof ConfigurationSection src)
-                return ConfigurationSerialization.deserializeObject(src.getValues(false), type.asSubclass(ConfigurationSerializable.class));
-            return object;
+        public Object deserialized(Class<?> type, Object value) {
+            var subclass = type.asSubclass(ConfigurationSerializable.class);
+            if (type.isEnum()) return EnumUtil.from(type, value.toString());
+            else if (type == UUID.class) return UUID.fromString(value.toString());
+            else if (type == World.class) return Bukkit.getWorld(value.toString());
+            else if (type == Location.class) return LocationUtil.deserialize(value.toString());
+            else if (value instanceof ConfigurationSection src) return deserializeObject(src.getValues(false), subclass);
+            return value;
         }
 
         @Override
@@ -379,11 +387,8 @@ public interface JsonConfiguration {
             return current.has(path);
         }
 
-        private JsonElement serialize(Object value) {
-            var gson = new Gson();
-            if (value instanceof Location src) return gson.toJsonTree(LocationUtil.serialize(src));
-            else if (value instanceof UUID src) return gson.toJsonTree(src.toString());
-            return gson.toJsonTree(value);
+        private ConfigurationSerializable deserializeObject(Map<String, ?> data, Class<? extends ConfigurationSerializable> type) {
+            return ConfigurationSerialization.deserializeObject(data, type);
         }
 
         private Map<Field, Config> configurables(Class<?> clazz) {

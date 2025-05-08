@@ -5,7 +5,9 @@ import dev.lone64.LoneLib.common.util.config.annotation.Config;
 import dev.lone64.LoneLib.common.util.config.configuration.Configuration;
 import dev.lone64.LoneLib.common.util.java.FileUtil;
 import dev.lone64.LoneLib.common.util.location.LocationUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
@@ -14,6 +16,7 @@ import org.bukkit.plugin.Plugin;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 import java.util.*;
 
 public interface YmlConfiguration {
@@ -26,8 +29,8 @@ public interface YmlConfiguration {
     void set(String key, Object value);
     void setIfAbuse(String key, Object value);
 
-    Object serialized(Object object);
-    Object deserialized(Object object);
+    Object serialized(Class<?> type, Object value);
+    Object deserialized(Class<?> type, Object value);
 
     Object get(String key);
     Object get(String key, Object def);
@@ -104,9 +107,9 @@ public interface YmlConfiguration {
                     var value = this.config.get(key);
                     if ((value != null && field.get(this) == null) || (value != null && field.get(this) != null && value.equals(field.get(this))))
                         continue;
-                    value = this.serialized(field.get(object));
+                    value = this.serialized(field.getType(), field.get(object));
                     if (value == null) continue;
-                    this.config.set(key, serialize(value));
+                    this.config.set(key, value);
                     this.config.save(this.getFile());
                 }
             } catch (final IllegalArgumentException e) {
@@ -121,7 +124,7 @@ public interface YmlConfiguration {
         @Override
         public void set(String key, Object value) {
             try {
-                this.config.set(key, value != null ? this.serialize(value) : null);
+                this.config.set(key, value);
                 this.config.save(this.getFile());
             } catch (IOException e) {
                 throw new IllegalArgumentException("An error occurred while saving config: %s".formatted(key), e);
@@ -134,18 +137,24 @@ public interface YmlConfiguration {
         }
 
         @Override
-        public Object serialized(Object object) {
-            if (object instanceof ConfigurationSerializable src)
-                return src.serialize();
-            return object;
+        public Object serialized(Class<?> type, Object value) {
+            if (type.isEnum()) return EnumUtil.to(value);
+            else if (type == UUID.class) return value.toString();
+            else if (type == World.class) return ((World) value).getName();
+            else if (type == Location.class) return LocationUtil.serialize((Location) value);
+            else if (value instanceof ConfigurationSerializable) return ((ConfigurationSerializable) value).serialize();
+            return value;
         }
 
         @Override
-        public Object deserialized(Object object) {
-            var type = object.getClass();
-            if (object instanceof ConfigurationSection src)
-                return ConfigurationSerialization.deserializeObject(src.getValues(false), type.asSubclass(ConfigurationSerializable.class));
-            return object;
+        public Object deserialized(Class<?> type, Object value) {
+            var subclass = type.asSubclass(ConfigurationSerializable.class);
+            if (type.isEnum()) return EnumUtil.from(type, value.toString());
+            else if (type == UUID.class) return UUID.fromString(value.toString());
+            else if (type == World.class) return Bukkit.getWorld(value.toString());
+            else if (type == Location.class) return LocationUtil.deserialize(value.toString());
+            else if (value instanceof ConfigurationSection src) return deserializeObject(src.getValues(false), subclass);
+            return value;
         }
 
         @Override
@@ -283,13 +292,8 @@ public interface YmlConfiguration {
             return this.config;
         }
 
-        private Object serialize(Object value) {
-            Class<?> type = value.getClass();
-            if (type.isEnum()) return EnumUtil.to(value);
-            else if (type == UUID.class) return value.toString();
-            else if (type == Location.class) return LocationUtil.serialize((Location) value);
-            else if (value instanceof ConfigurationSerializable serializable) return serializable.serialize();
-            return value;
+        private ConfigurationSerializable deserializeObject(Map<String, ?> data, Class<? extends ConfigurationSerializable> type) {
+            return ConfigurationSerialization.deserializeObject(data, type);
         }
 
         private Map<Field, Config> configurables(Class<?> clazz) {
