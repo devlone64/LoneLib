@@ -2,8 +2,8 @@ package dev.lone64.LoneLib;
 
 import dev.lone64.LoneLib.common.command.other.CommandManager;
 import dev.lone64.LoneLib.common.event.PlayerJumpEvent;
-import dev.lone64.LoneLib.common.menu.BasicMenu;
-import dev.lone64.LoneLib.common.menu.TextureMenu;
+import dev.lone64.LoneLib.common.menu.impl.Minecraft;
+import dev.lone64.LoneLib.common.menu.impl.ItemsAdder;
 import dev.lone64.LoneLib.common.textarea.other.TextareaManager;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -65,10 +65,10 @@ public class Main extends JavaPlugin {
         @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
         public void onInventoryClick(final InventoryClickEvent e) {
             if (e.getWhoClicked() instanceof Player) {
-                if (e.getInventory().getHolder() instanceof BasicMenu menu) {
-                    if (menu.getClickHandler() != null) menu.getClickHandler().onClick(menu, e);
-                } else if (e.getInventory().getHolder() instanceof TextureMenu menu) {
-                    if (menu.getClickHandler() != null) menu.getClickHandler().onClick(menu, e);
+                if (e.getInventory().getHolder() instanceof Minecraft src) {
+                    if (src.getClickHandler() != null) src.getClickHandler().onClick(src, e);
+                } else if (e.getInventory().getHolder() instanceof ItemsAdder src) {
+                    if (src.getClickHandler() != null) src.getClickHandler().onClick(src, e);
                 }
             }
         }
@@ -76,10 +76,10 @@ public class Main extends JavaPlugin {
         @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
         public void onInventoryClose(final InventoryCloseEvent e) {
             if (e.getPlayer() instanceof Player) {
-                if (e.getInventory().getHolder() instanceof BasicMenu menu) {
-                    if (menu.getCloseHandler() != null) menu.getCloseHandler().onClose(menu, e);
-                } else if (e.getInventory().getHolder() instanceof TextureMenu menu) {
-                    if (menu.getCloseHandler() != null) menu.getCloseHandler().onClose(menu, e);
+                if (e.getInventory().getHolder() instanceof Minecraft src) {
+                    if (src.getCloseHandler() != null) src.getCloseHandler().onClose(src, e);
+                } else if (e.getInventory().getHolder() instanceof ItemsAdder src) {
+                    if (src.getCloseHandler() != null) src.getCloseHandler().onClose(src, e);
                 }
             }
         }

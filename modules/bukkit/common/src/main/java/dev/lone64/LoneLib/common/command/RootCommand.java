@@ -16,7 +16,7 @@ import static dev.lone64.LoneLib.common.util.string.ColorUtil.format;
 @Getter
 @AllArgsConstructor
 public class RootCommand {
-    private final BukkitCommand command;
+    private final CommandInstance command;
 
     public boolean handleCommand(CommandSender sender, org.bukkit.command.Command command, String arg, String[] args) {
         if (this.command.getTarget() instanceof ConsoleTarget consoleTarget) {

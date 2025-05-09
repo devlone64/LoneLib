@@ -1,6 +1,6 @@
 package dev.lone64.LoneLib.common.command.other.util;
 
-import dev.lone64.LoneLib.common.command.BukkitCommand;
+import dev.lone64.LoneLib.common.command.CommandInstance;
 import dev.lone64.LoneLib.common.command.RootCommand;
 import dev.lone64.LoneLib.common.command.other.CommandManager;
 import org.bukkit.Bukkit;
@@ -11,7 +11,7 @@ import org.bukkit.plugin.Plugin;
 import java.lang.reflect.InvocationTargetException;
 
 public class CommandUtil {
-    public static void register(BukkitCommand command) {
+    public static void register(CommandInstance command) {
         var commandMap = getCommandMap();
         if (commandMap == null) return;
 

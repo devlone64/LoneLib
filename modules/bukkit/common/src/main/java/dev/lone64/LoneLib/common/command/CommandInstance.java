@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 @Getter
-public class BukkitCommand {
+public class CommandInstance {
     private Plugin plugin;
     private String name;
     private String usage = "/<command>";
@@ -26,67 +26,67 @@ public class BukkitCommand {
     private final Map<MsgType, String> options = new HashMap<>();
     private final Map<String, Target<?>> commands = new HashMap<>();
 
-    public BukkitCommand(Plugin plugin) {
+    public CommandInstance(Plugin plugin) {
         this(plugin, "");
     }
 
-    public BukkitCommand(Plugin plugin, String name) {
+    public CommandInstance(Plugin plugin, String name) {
         this.plugin = plugin;
         this.name = name.toLowerCase();
     }
 
-    public BukkitCommand setPlugin(Plugin plugin) {
+    public CommandInstance setPlugin(Plugin plugin) {
         this.plugin = plugin;
         return this;
     }
 
-    public BukkitCommand setName(String name) {
+    public CommandInstance setName(String name) {
         this.name = name;
         return this;
     }
 
-    public BukkitCommand setUsage(String usage) {
+    public CommandInstance setUsage(String usage) {
         this.usage = usage;
         return this;
     }
 
-    public BukkitCommand setDescription(String description) {
+    public CommandInstance setDescription(String description) {
         this.description = description;
         return this;
     }
 
-    public BukkitCommand setAliases(List<String> aliases) {
+    public CommandInstance setAliases(List<String> aliases) {
         this.aliases = aliases;
         return this;
     }
 
-    public BukkitCommand setPermission(Permission permission) {
+    public CommandInstance setPermission(Permission permission) {
         this.permission = permission;
         return this;
     }
 
-    public BukkitCommand setPermission(String node) {
+    public CommandInstance setPermission(String node) {
         this.permission.setNode(node);
         return this;
     }
 
-    public BukkitCommand setPermission(String node, String message) {
+    public CommandInstance setPermission(String node, String message) {
         this.permission.setNode(node);
         this.permission.setMessage(message);
         return this;
     }
 
-    public BukkitCommand setOption(MsgType type, String message) {
+    public CommandInstance setOption(MsgType type, String message) {
         this.options.put(type, message);
         return this;
     }
 
-    public BukkitCommand onExecute(Target<?> target) {
+    public CommandInstance onExecute(Target<?> target) {
         this.target = target;
         return this;
     }
 
-    public BukkitCommand onArgument(String name, Target<?> target) {
+    public CommandInstance onArgument(String name, Target<?> target) {
         this.commands.put(name, target);
         return this;
     }
@@ -95,7 +95,7 @@ public class BukkitCommand {
         CommandUtil.register(this);
     }
 
-    public static BukkitCommand get(Plugin plugin, String name) {
-        return new BukkitCommand(plugin, name);
+    public static CommandInstance fetch(Plugin plugin, String name) {
+        return new CommandInstance(plugin, name);
     }
 }

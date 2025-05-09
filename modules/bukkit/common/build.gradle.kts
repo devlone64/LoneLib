@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "dev.lone64.LoneLib.common"
-version = "1.0.6"
+version = "1.0.7"
 
 dependencies {
     compileOnly("com.iridium:IridiumColorAPI:1.0.9")
