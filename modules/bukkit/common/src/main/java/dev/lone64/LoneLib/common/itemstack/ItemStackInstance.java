@@ -22,25 +22,25 @@ import java.util.List;
 import static dev.lone64.LoneLib.common.util.string.ColorUtil.format;
 
 @Getter
-public class BukkitItemStack {
+public class ItemStackInstance {
     private ItemStack item;
 
-    public BukkitItemStack setMaterial(Material material) {
+    public ItemStackInstance setMaterial(Material material) {
         this.item = new ItemStack(material, 1);
         return this;
     }
     
-    public BukkitItemStack setItem(ItemStack item) {
+    public ItemStackInstance setItem(ItemStack item) {
         this.item = item;
         return this;
     }
     
-    public BukkitItemStack setAmount(int amount) {
+    public ItemStackInstance setAmount(int amount) {
         this.getItem().setAmount(amount);
         return this;
     }
     
-    public BukkitItemStack setName(String name) {
+    public ItemStackInstance setName(String name) {
         var itemMeta = this.getItemMeta();
         if (itemMeta == null) return this;
         itemMeta.setDisplayName(format(name));
@@ -48,7 +48,7 @@ public class BukkitItemStack {
         return this;
     }
     
-    public BukkitItemStack setLore(List<String> lore) {
+    public ItemStackInstance setLore(List<String> lore) {
         var itemMeta = this.getItemMeta();
         if (itemMeta == null) return this;
         itemMeta.setLore(format(lore));
@@ -56,7 +56,7 @@ public class BukkitItemStack {
         return this;
     }
     
-    public BukkitItemStack setDamage(int damage) {
+    public ItemStackInstance setDamage(int damage) {
         var itemMeta = (Damageable) this.getItemMeta();
         if (itemMeta == null) return this;
         itemMeta.setDamage(damage);
@@ -64,7 +64,7 @@ public class BukkitItemStack {
         return this;
     }
     
-    public BukkitItemStack setCustomModelData(int customModelData) {
+    public ItemStackInstance setCustomModelData(int customModelData) {
         var itemMeta = this.getItemMeta();
         if (itemMeta == null) return this;
         itemMeta.setCustomModelData(customModelData);
@@ -72,7 +72,7 @@ public class BukkitItemStack {
         return this;
     }
     
-    public BukkitItemStack setOwningPlayer(String owningPlayer) {
+    public ItemStackInstance setOwningPlayer(String owningPlayer) {
         var uuid = UUIDUtil.from(owningPlayer);
         if (uuid == null) return this;
         var itemMeta = (SkullMeta) this.getItemMeta();
@@ -85,11 +85,11 @@ public class BukkitItemStack {
         return this;
     }
     
-    public BukkitItemStack setOwningPlayer(OfflinePlayer owningPlayer) {
+    public ItemStackInstance setOwningPlayer(OfflinePlayer owningPlayer) {
         return setOwningPlayer(owningPlayer.getName());
     }
     
-    public BukkitItemStack setUnbreakable(boolean isUnbreakable) {
+    public ItemStackInstance setUnbreakable(boolean isUnbreakable) {
         var itemMeta = this.getItemMeta();
         if (itemMeta == null) return this;
         itemMeta.setUnbreakable(isUnbreakable);
@@ -97,7 +97,7 @@ public class BukkitItemStack {
         return this;
     }
     
-    public BukkitItemStack setLeatherColor(Color leatherColor) {
+    public ItemStackInstance setLeatherColor(Color leatherColor) {
         var type = this.getItem().getType();
         if (!(type == Material.LEATHER_HELMET || type == Material.LEATHER_CHESTPLATE || type == Material.LEATHER_LEGGINGS || type == Material.LEATHER_BOOTS))
             throw new IllegalArgumentException("color(Color) only applicable for leather armor.");
@@ -108,7 +108,7 @@ public class BukkitItemStack {
         return this;
     }
     
-    public BukkitItemStack setItemFlags(ItemFlag... itemFlags) {
+    public ItemStackInstance setItemFlags(ItemFlag... itemFlags) {
         var itemMeta = this.getItemMeta();
         if (itemMeta == null) return this;
         itemMeta.getItemFlags().forEach(itemMeta::removeItemFlags);
@@ -117,7 +117,7 @@ public class BukkitItemStack {
         return this;
     }
     
-    public BukkitItemStack setEnchantments(EnchantData... enchantments) {
+    public ItemStackInstance setEnchantments(EnchantData... enchantments) {
         var itemMeta = this.getItemMeta();
         if (itemMeta == null) return this;
         Arrays.stream(enchantments).forEach(enchant -> itemMeta.addEnchant(
@@ -127,7 +127,7 @@ public class BukkitItemStack {
         return this;
     }
     
-    public BukkitItemStack setAttributes(AttributeData... attributes) {
+    public ItemStackInstance setAttributes(AttributeData... attributes) {
         var itemMeta = this.getItemMeta();
         if (itemMeta == null) return this;
         Arrays.stream(attributes).forEach(attribute -> itemMeta.addAttributeModifier(
@@ -141,11 +141,10 @@ public class BukkitItemStack {
         return getItem().getItemMeta();
     }
 
-    public static BukkitItemStack makeItemStack(Material src) {
-        return new BukkitItemStack().setMaterial(src);
+    public static ItemStackInstance fetch(Material src) {
+        return new ItemStackInstance().setMaterial(src);
     }
-
-    public static BukkitItemStack makeItemStack(ItemStack src) {
-        return new BukkitItemStack().setItem(src);
+    public static ItemStackInstance fetch(ItemStack src) {
+        return new ItemStackInstance().setItem(src);
     }
 }

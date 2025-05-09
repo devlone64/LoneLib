@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 @Getter
-public class BukkitTextarea {
+public class TextareaInstance {
     private Plugin plugin;
     private Player player;
 
@@ -25,67 +25,67 @@ public class BukkitTextarea {
     private TextHandler inputHandler;
     private UserHandler cancelHandler;
 
-    public BukkitTextarea setPlugin(Plugin plugin) {
+    public TextareaInstance setPlugin(Plugin plugin) {
         this.plugin = plugin;
         return this;
     }
 
-    public BukkitTextarea setPlayer(Player player) {
+    public TextareaInstance setPlayer(Player player) {
         this.player = player;
         return this;
     }
 
-    public BukkitTextarea setTitle(String title) {
+    public TextareaInstance setTitle(String title) {
         this.title = title;
         return this;
     }
 
-    public BukkitTextarea setSubtitle(String subtitle) {
+    public TextareaInstance setSubtitle(String subtitle) {
         this.subtitle = subtitle;
         return this;
     }
 
-    public BukkitTextarea setFadeIn(int fadeIn) {
+    public TextareaInstance setFadeIn(int fadeIn) {
         this.fadeIn = fadeIn;
         return this;
     }
 
-    public BukkitTextarea setFadeOut(int fadeOut) {
+    public TextareaInstance setFadeOut(int fadeOut) {
         this.fadeOut = fadeOut;
         return this;
     }
 
-    public BukkitTextarea setDelay(boolean isDelay) {
+    public TextareaInstance setDelay(boolean isDelay) {
         this.isDelay = isDelay;
         return this;
     }
 
-    public BukkitTextarea setSlowness(boolean isSlowness) {
+    public TextareaInstance setSlowness(boolean isSlowness) {
         this.isSlowness = isSlowness;
         return this;
     }
 
-    public BukkitTextarea setBlindness(boolean isBlindness) {
+    public TextareaInstance setBlindness(boolean isBlindness) {
         this.isBlindness = isBlindness;
         return this;
     }
 
-    public BukkitTextarea setJumpToCancel(boolean isJumpToCancel) {
+    public TextareaInstance setJumpToCancel(boolean isJumpToCancel) {
         this.isJumpToCancel = isJumpToCancel;
         return this;
     }
 
-    public BukkitTextarea onInit(UserHandler initHandler) {
+    public TextareaInstance onInit(UserHandler initHandler) {
         this.initHandler = initHandler;
         return this;
     }
 
-    public BukkitTextarea onInput(TextHandler inputHandler) {
+    public TextareaInstance onInput(TextHandler inputHandler) {
         this.inputHandler = inputHandler;
         return this;
     }
 
-    public BukkitTextarea onCancel(UserHandler cancelHandler) {
+    public TextareaInstance onCancel(UserHandler cancelHandler) {
         this.cancelHandler = cancelHandler;
         return this;
     }
@@ -105,7 +105,7 @@ public class BukkitTextarea {
         boolean onHandle(Player sender, String value);
     }
 
-    public static BukkitTextarea makeTextarea() {
-        return new BukkitTextarea();
+    public static TextareaInstance getInstance() {
+        return new TextareaInstance();
     }
 }

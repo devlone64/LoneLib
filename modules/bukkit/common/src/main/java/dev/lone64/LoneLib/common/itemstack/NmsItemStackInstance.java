@@ -7,20 +7,20 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 @Getter
-public class BukkitNmsItemStack {
+public class NmsItemStackInstance {
     private ItemStack item;
 
-    public BukkitNmsItemStack setMaterial(Material material) {
+    public NmsItemStackInstance setMaterial(Material material) {
         this.item = new ItemStack(material, 1);
         return this;
     }
 
-    public BukkitNmsItemStack setItem(ItemStack item) {
+    public NmsItemStackInstance setItem(ItemStack item) {
         this.item = item;
         return this;
     }
 
-    public BukkitNmsItemStack setNbt(String path, String value) {
+    public NmsItemStackInstance setNbt(String path, String value) {
         var itemMeta = this.getItemMeta();
         if (itemMeta == null) return this;
         if (NmsVersion.getCurrentVersion().isItemName()) {
@@ -52,7 +52,7 @@ public class BukkitNmsItemStack {
         return getItem().getItemMeta();
     }
 
-    public static BukkitNmsItemStack makeItem(ItemStack src) {
-        return new BukkitNmsItemStack().setItem(src);
+    public static NmsItemStackInstance makeItem(ItemStack src) {
+        return new NmsItemStackInstance().setItem(src);
     }
 }
