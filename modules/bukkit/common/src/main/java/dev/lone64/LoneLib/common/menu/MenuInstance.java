@@ -5,10 +5,11 @@ import org.bukkit.entity.Player;
 
 import java.lang.reflect.InvocationTargetException;
 
+@SuppressWarnings("unchecked")
 public class MenuInstance {
-    public static <T> Menu<T> fetch(Class<Menu<T>> menuClass, Player sender) {
+    public static Menu<?> fetch(Class<?> menuClass, Player sender) {
         try {
-            return menuClass.getConstructor(Player.class).newInstance(sender);
+            return ((Class<Menu<?>>) menuClass).getConstructor(Player.class).newInstance(sender);
         } catch (InvocationTargetException | InstantiationException | IllegalAccessException | NoSuchMethodException e) {
             throw new IllegalArgumentException("An error occurred while fetching the menu.", e);
         }
