@@ -1,7 +1,7 @@
 package dev.lone64.LoneLib.common;
 
 import dev.lone64.LoneLib.common.command.Command;
-import dev.lone64.LoneLib.common.itemstack.Item;
+import dev.lone64.LoneLib.common.item.Item;
 import dev.lone64.LoneLib.common.menu.Menu;
 import dev.lone64.LoneLib.common.menu.page.Paginate;
 import dev.lone64.LoneLib.common.menu.page.impl.ItemStackPage;

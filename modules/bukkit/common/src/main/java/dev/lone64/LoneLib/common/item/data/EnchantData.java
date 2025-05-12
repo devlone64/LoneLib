@@ -1,4 +1,4 @@
-package dev.lone64.LoneLib.common.itemstack.data;
+package dev.lone64.LoneLib.common.item.data;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

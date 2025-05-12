@@ -1,7 +1,7 @@
-package dev.lone64.LoneLib.common.itemstack;
+package dev.lone64.LoneLib.common.item;
 
-import dev.lone64.LoneLib.common.itemstack.data.AttributeData;
-import dev.lone64.LoneLib.common.itemstack.data.EnchantData;
+import dev.lone64.LoneLib.common.item.data.AttributeData;
+import dev.lone64.LoneLib.common.item.data.EnchantData;
 import dev.lone64.LoneLib.common.util.java.uuid.UUIDUtil;
 import dev.lone64.LoneLib.common.util.nms.NmsVersion;
 import lombok.Getter;
@@ -108,10 +108,9 @@ public class Item {
         return this;
     }
     
-    public Item setItemFlags(ItemFlag... itemFlags) {
+    public Item addItemFlags(ItemFlag... itemFlags) {
         var itemMeta = this.getItemMeta();
         if (itemMeta == null) return this;
-        itemMeta.getItemFlags().forEach(itemMeta::removeItemFlags);
         itemMeta.addItemFlags(itemFlags);
         this.getItemStack().setItemMeta(itemMeta);
         return this;
