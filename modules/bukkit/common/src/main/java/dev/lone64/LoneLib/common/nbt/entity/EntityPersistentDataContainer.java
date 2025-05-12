@@ -4,7 +4,6 @@ import dev.lone64.LoneLib.common.nbt.PersistentDataContainer;
 import dev.lone64.LoneLib.common.util.item.ItemUtil;
 import dev.lone64.LoneLib.common.util.location.LocationUtil;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
@@ -18,7 +17,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-@Getter
 @AllArgsConstructor
 public class EntityPersistentDataContainer implements PersistentDataContainer {
     private final Entity entity;
@@ -291,5 +289,10 @@ public class EntityPersistentDataContainer implements PersistentDataContainer {
     public List<ItemStack> getItemStackList(String key) {
         if (!this.has(key)) return new ArrayList<>();
         return this.get(key, PersistentDataType.LIST.strings()).stream().map(ItemUtil::deserialize).toList();
+    }
+
+    @Override
+    public Entity getEntity() {
+        return this.entity;
     }
 }

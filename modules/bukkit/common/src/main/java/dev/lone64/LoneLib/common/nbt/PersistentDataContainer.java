@@ -2,6 +2,7 @@ package dev.lone64.LoneLib.common.nbt;
 
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
@@ -61,4 +62,7 @@ public interface PersistentDataContainer {
     List<ItemStack> getItemStackList(String key);
 
     default ItemMeta getItemMeta() {return null;}
+
+    default Entity getEntity() {return null;}
+    default ItemStack getResult() {return null;}
 }

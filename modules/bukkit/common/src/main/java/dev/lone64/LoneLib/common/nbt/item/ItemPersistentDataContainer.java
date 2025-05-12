@@ -4,7 +4,6 @@ import dev.lone64.LoneLib.common.nbt.PersistentDataContainer;
 import dev.lone64.LoneLib.common.util.item.ItemUtil;
 import dev.lone64.LoneLib.common.util.location.LocationUtil;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
@@ -18,7 +17,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-@Getter
 @AllArgsConstructor
 public class ItemPersistentDataContainer implements PersistentDataContainer {
     private final ItemStack itemStack;
@@ -28,7 +26,7 @@ public class ItemPersistentDataContainer implements PersistentDataContainer {
         var namespacedKey = NamespacedKey.fromString("LoneLib:%s".formatted(key));
         Objects.requireNonNull(namespacedKey, "NamespacedKey를 불러올 수 없습니다.");
         this.getItemMeta().getPersistentDataContainer().set(namespacedKey, type, value);
-        this.getItemStack().setItemMeta(this.getItemMeta());
+        this.getResult().setItemMeta(this.getItemMeta());
     }
 
     @Override
@@ -36,7 +34,7 @@ public class ItemPersistentDataContainer implements PersistentDataContainer {
         var namespacedKey = NamespacedKey.fromString("LoneLib:%s".formatted(key));
         Objects.requireNonNull(namespacedKey, "NamespacedKey를 불러올 수 없습니다.");
         this.getItemMeta().getPersistentDataContainer().remove(namespacedKey);
-        this.getItemStack().setItemMeta(this.getItemMeta());
+        this.getResult().setItemMeta(this.getItemMeta());
     }
 
     @Override
@@ -297,6 +295,11 @@ public class ItemPersistentDataContainer implements PersistentDataContainer {
 
     @Override
     public ItemMeta getItemMeta() {
-        return this.getItemStack().getItemMeta();
+        return this.getResult().getItemMeta();
+    }
+
+    @Override
+    public ItemStack getResult() {
+        return this.itemStack;
     }
 }
