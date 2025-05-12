@@ -10,30 +10,30 @@ public class ItemStackPage implements Paginate<ItemStack> {
     private List<ItemStack> items;
 
     @Override
-    public Paginate<ItemStack> setPage(int page) {
+    public ItemStackPage setPage(int page) {
         this.page = page;
         return this;
     }
 
     @Override
-    public Paginate<ItemStack> setCount(int count) {
+    public ItemStackPage setCount(int count) {
         this.count = count;
         return this;
     }
 
     @Override
-    public Paginate<ItemStack> setItems(List<ItemStack> items) {
+    public ItemStackPage setItems(List<ItemStack> items) {
         this.items = items;
         return this;
     }
 
     @Override
-    public Paginate<ItemStack> with(int count, List<ItemStack> items) {
+    public ItemStackPage with(int count, List<ItemStack> items) {
         return with(count, 1, items);
     }
 
     @Override
-    public Paginate<ItemStack> with(int count, int page, List<ItemStack> items) {
+    public ItemStackPage with(int count, int page, List<ItemStack> items) {
         this.count = count;
         this.page = page;
         this.items = items;
