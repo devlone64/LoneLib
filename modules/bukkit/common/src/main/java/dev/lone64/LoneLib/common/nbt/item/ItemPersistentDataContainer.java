@@ -3,7 +3,6 @@ package dev.lone64.LoneLib.common.nbt.item;
 import dev.lone64.LoneLib.common.nbt.PersistentDataContainer;
 import dev.lone64.LoneLib.common.util.item.ItemUtil;
 import dev.lone64.LoneLib.common.util.location.LocationUtil;
-import lombok.AllArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
@@ -14,19 +13,27 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
-@AllArgsConstructor
 public class ItemPersistentDataContainer implements PersistentDataContainer {
     private final ItemStack itemStack;
+    private final ItemMeta itemMeta;
+
+    public ItemPersistentDataContainer(ItemStack itemStack) {
+        this.itemStack = itemStack;
+        this.itemMeta = itemStack.getItemMeta();
+    }
+
+    private org.bukkit.persistence.PersistentDataContainer getPersistentDataContainer() {
+        return this.getItemMeta().getPersistentDataContainer();
+    }
 
     @Override
     public <P, C> void set(String key, PersistentDataType<P, C> type, C value) {
         key = key.replace("-", "_").replace(" ", "_").toLowerCase();
         var namespacedKey = NamespacedKey.fromString("lonelib:%s".formatted(key));
         if (namespacedKey == null) throw new NullPointerException("NamespacedKey를 불러올 수 없습니다.");
-        this.getItemMeta().getPersistentDataContainer().set(namespacedKey, type, value);
+        this.getPersistentDataContainer().set(namespacedKey, type, value);
         this.getResult().setItemMeta(this.getItemMeta());
     }
 
@@ -35,7 +42,7 @@ public class ItemPersistentDataContainer implements PersistentDataContainer {
         key = key.replace("-", "_").replace(" ", "_").toLowerCase();
         var namespacedKey = NamespacedKey.fromString("lonelib:%s".formatted(key));
         if (namespacedKey == null) throw new NullPointerException("NamespacedKey를 불러올 수 없습니다.");
-        this.getItemMeta().getPersistentDataContainer().remove(namespacedKey);
+        this.getPersistentDataContainer().remove(namespacedKey);
         this.getResult().setItemMeta(this.getItemMeta());
     }
 
@@ -44,7 +51,7 @@ public class ItemPersistentDataContainer implements PersistentDataContainer {
         key = key.replace("-", "_").replace(" ", "_").toLowerCase();
         var namespacedKey = NamespacedKey.fromString("lonelib:%s".formatted(key));
         if (namespacedKey == null) throw new NullPointerException("NamespacedKey를 불러올 수 없습니다.");
-        return this.getItemMeta().getPersistentDataContainer().get(namespacedKey, type);
+        return this.getPersistentDataContainer().get(namespacedKey, type);
     }
 
     @Override
@@ -52,7 +59,7 @@ public class ItemPersistentDataContainer implements PersistentDataContainer {
         key = key.replace("-", "_").replace(" ", "_").toLowerCase();
         var namespacedKey = NamespacedKey.fromString("lonelib:%s".formatted(key));
         if (namespacedKey == null) throw new NullPointerException("NamespacedKey를 불러올 수 없습니다.");
-        return this.getItemMeta().getPersistentDataContainer().has(namespacedKey);
+        return this.getPersistentDataContainer().has(namespacedKey);
     }
 
     @Override
@@ -60,7 +67,7 @@ public class ItemPersistentDataContainer implements PersistentDataContainer {
         key = key.replace("-", "_").replace(" ", "_").toLowerCase();
         var namespacedKey = NamespacedKey.fromString("lonelib:%s".formatted(key));
         if (namespacedKey == null) throw new NullPointerException("NamespacedKey를 불러올 수 없습니다.");
-        return this.getItemMeta().getPersistentDataContainer().has(namespacedKey, type);
+        return this.getPersistentDataContainer().has(namespacedKey, type);
     }
 
     @Override
@@ -285,7 +292,7 @@ public class ItemPersistentDataContainer implements PersistentDataContainer {
 
     @Override
     public ItemMeta getItemMeta() {
-        return this.getResult().getItemMeta();
+        return this.itemMeta;
     }
 
     @Override

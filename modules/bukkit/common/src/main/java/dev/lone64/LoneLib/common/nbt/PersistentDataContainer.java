@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface PersistentDataContainer {
-    <P, C> void set(String key, PersistentDataType<P, C> type, C value);
+    <P, C>void set(String key, PersistentDataType<P, C> type, C value);
     void remove(String key);
     <P, C> C get(String key, PersistentDataType<P, C> type);
     boolean has(String key);
