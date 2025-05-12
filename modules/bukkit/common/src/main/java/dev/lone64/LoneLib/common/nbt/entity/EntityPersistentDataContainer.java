@@ -31,34 +31,35 @@ public class EntityPersistentDataContainer implements PersistentDataContainer {
     @Override
     public void remove(String key) {
         var namespacedKey = NamespacedKey.fromString("LoneLib:%s".formatted(key));
-        Objects.requireNonNull(namespacedKey, "NamespacedKey를 불러올 수 없습니다.");
+        if (namespacedKey == null) throw new NullPointerException("NamespacedKey를 불러올 수 없습니다.");
         this.getEntity().getPersistentDataContainer().remove(namespacedKey);
     }
 
     @Override
     public <P, C> C get(String key, PersistentDataType<P, C> type) {
         var namespacedKey = NamespacedKey.fromString("LoneLib:%s".formatted(key));
-        Objects.requireNonNull(namespacedKey, "NamespacedKey를 불러올 수 없습니다.");
+        if (namespacedKey == null) throw new NullPointerException("NamespacedKey를 불러올 수 없습니다.");
         return this.getEntity().getPersistentDataContainer().get(namespacedKey, type);
     }
 
     @Override
     public boolean has(String key) {
         var namespacedKey = NamespacedKey.fromString("LoneLib:%s".formatted(key));
-        Objects.requireNonNull(namespacedKey, "NamespacedKey를 불러올 수 없습니다.");
+        if (namespacedKey == null) throw new NullPointerException("NamespacedKey를 불러올 수 없습니다.");
         return this.getEntity().getPersistentDataContainer().has(namespacedKey);
     }
 
     @Override
     public <P, C> boolean has(String key, PersistentDataType<P, C> type) {
         var namespacedKey = NamespacedKey.fromString("LoneLib:%s".formatted(key));
-        Objects.requireNonNull(namespacedKey, "NamespacedKey를 불러올 수 없습니다.");
+        if (namespacedKey == null) throw new NullPointerException("NamespacedKey를 불러올 수 없습니다.");
         return this.getEntity().getPersistentDataContainer().has(namespacedKey, type);
     }
 
     @Override
     public void setString(String key, String value) {
-        Objects.requireNonNull(value, "String 값이 존재하지 않습니다.");
+        var namespacedKey = NamespacedKey.fromString("LoneLib:%s".formatted(key));
+        if (namespacedKey == null) throw new NullPointerException("NamespacedKey를 불러올 수 없습니다.");
         this.set(key, PersistentDataType.STRING, value);
     }
 
@@ -89,85 +90,71 @@ public class EntityPersistentDataContainer implements PersistentDataContainer {
 
     @Override
     public void setUUID(String key, UUID value) {
-        Objects.requireNonNull(value, "UUID 값이 존재하지 않습니다.");
         this.set(key, PersistentDataType.STRING, value.toString());
     }
 
     @Override
     public void setWorld(String key, World value) {
-        Objects.requireNonNull(value, "World 값이 존재하지 않습니다.");
         this.set(key, PersistentDataType.STRING, value.getName());
     }
 
     @Override
     public void setLocation(String key, Location value) {
-        Objects.requireNonNull(value, "Location 값이 존재하지 않습니다.");
         this.set(key, PersistentDataType.STRING, LocationUtil.serialize(value));
     }
 
     @Override
     public void setItemStack(String key, ItemStack value) {
-        Objects.requireNonNull(value, "ItemStack 값이 존재하지 않습니다.");
         this.set(key, PersistentDataType.STRING, ItemUtil.serialize(value));
     }
 
     @Override
     public void setStringList(String key, List<String> values) {
-        Objects.requireNonNull(values, "StringList 값이 존재하지 않습니다.");
         this.set(key, PersistentDataType.LIST.strings(), values);
     }
 
     @Override
     public void setIntegerList(String key, List<Integer> values) {
-        Objects.requireNonNull(values, "IntegerList 값이 존재하지 않습니다.");
         this.set(key, PersistentDataType.LIST.integers(), values);
     }
 
     @Override
     public void setDoubleList(String key, List<Double> values) {
-        Objects.requireNonNull(values, "DoubleList 값이 존재하지 않습니다.");
         this.set(key, PersistentDataType.LIST.doubles(), values);
     }
 
     @Override
     public void setFloatList(String key, List<Float> values) {
-        Objects.requireNonNull(values, "FloatList 값이 존재하지 않습니다.");
         this.set(key, PersistentDataType.LIST.floats(), values);
     }
 
     @Override
     public void setLongList(String key, List<Long> values) {
-        Objects.requireNonNull(values, "LongList 값이 존재하지 않습니다.");
         this.set(key, PersistentDataType.LIST.longs(), values);
     }
 
     @Override
     public void setBooleanList(String key, List<Boolean> values) {
-        Objects.requireNonNull(values, "BooleanList 값이 존재하지 않습니다.");
         this.set(key, PersistentDataType.LIST.booleans(), values);
     }
 
     @Override
     public void setUUIDList(String key, List<UUID> values) {
-        Objects.requireNonNull(values, "UUIDList 값이 존재하지 않습니다.");
         this.set(key, PersistentDataType.LIST.strings(), values.stream().map(UUID::toString).toList());
     }
 
     @Override
     public void setWorldList(String key, List<World> values) {
-        Objects.requireNonNull(values, "WorldList 값이 존재하지 않습니다.");
         this.set(key, PersistentDataType.LIST.strings(), values.stream().map(World::getName).toList());
     }
 
     @Override
     public void setLocationList(String key, List<Location> values) {
-        Objects.requireNonNull(values, "LocationList 값이 존재하지 않습니다.");
         this.set(key, PersistentDataType.LIST.strings(), values.stream().map(LocationUtil::serialize).toList());
     }
 
     @Override
     public void setItemStackList(String key, List<ItemStack> values) {
-        Objects.requireNonNull(values, "ItemStackList 값이 존재하지 않습니다.");
         this.set(key, PersistentDataType.LIST.strings(), values.stream().map(ItemUtil::serialize).toList());
     }
 
