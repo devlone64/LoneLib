@@ -1,13 +1,15 @@
 package dev.lone64.LoneLib.common;
 
-import dev.lone64.LoneLib.common.command.CommandInstance;
-import dev.lone64.LoneLib.common.itemstack.ItemStackInstance;
-import dev.lone64.LoneLib.common.menu.MenuInstance;
-import dev.lone64.LoneLib.common.menu.interfaces.Menu;
+import dev.lone64.LoneLib.common.command.Command;
+import dev.lone64.LoneLib.common.itemstack.Item;
+import dev.lone64.LoneLib.common.menu.Menu;
+import dev.lone64.LoneLib.common.menu.page.Paginate;
+import dev.lone64.LoneLib.common.menu.page.impl.ItemStackPage;
+import dev.lone64.LoneLib.common.menu.page.impl.MaterialPage;
 import dev.lone64.LoneLib.common.nbt.PersistentDataContainer;
 import dev.lone64.LoneLib.common.nbt.entity.EntityPersistentDataContainer;
 import dev.lone64.LoneLib.common.nbt.item.ItemPersistentDataContainer;
-import dev.lone64.LoneLib.common.textarea.TextareaInstance;
+import dev.lone64.LoneLib.common.textarea.Textarea;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -23,24 +25,36 @@ public class LoneLib {
         return provider.getProvider();
     }
 
-    public static TextareaInstance createTextarea() {
-        return TextareaInstance.loadTextarea();
+    public static Textarea createTextarea() {
+        return Textarea.createTextarea();
     }
 
-    public static Menu<?> createMenu(Class<?> menuClass, Player player) {
-        return MenuInstance.loadMenu(menuClass, player);
+    public static dev.lone64.LoneLib.common.menu.interfaces.Menu<?> createMenu(Class<?> menuClass, Player player) {
+        return Menu.createMenu(menuClass, player);
     }
 
-    public static ItemStackInstance createItem(Material material) {
-        return ItemStackInstance.loadItem(material);
+    public static MaterialPage createMaterialPage() {
+        return Paginate.createMaterialPage();
     }
 
-    public static ItemStackInstance createItem(ItemStack itemStack) {
-        return ItemStackInstance.loadItem(itemStack);
+    public static ItemStackPage createItemStackPage() {
+        return Paginate.createItemStackPage();
     }
 
-    public static CommandInstance createCommand(Plugin plugin, String name) {
-        return CommandInstance.loadCommand(plugin, name);
+    public static <T> Paginate<T> createCustomPage(Class<? extends Paginate<T>> paginateClass) {
+        return Paginate.createCustomPage(paginateClass);
+    }
+
+    public static Item createItem(Material material) {
+        return Item.createItemStack(material);
+    }
+
+    public static Item createItem(ItemStack itemStack) {
+        return Item.createItemStack(itemStack);
+    }
+
+    public static Command createCommand(Plugin plugin, String name) {
+        return Command.createCommand(plugin, name);
     }
 
     public static PersistentDataContainer createEntityPersistentDataContainer(Entity entity) {

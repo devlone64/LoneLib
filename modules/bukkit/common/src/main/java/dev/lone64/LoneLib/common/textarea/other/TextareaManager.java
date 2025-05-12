@@ -1,6 +1,6 @@
 package dev.lone64.LoneLib.common.textarea.other;
 
-import dev.lone64.LoneLib.common.textarea.TextareaInstance;
+import dev.lone64.LoneLib.common.textarea.Textarea;
 import dev.lone64.LoneLib.common.util.nms.NmsVersion;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -15,9 +15,9 @@ import java.util.UUID;
 import static dev.lone64.LoneLib.common.util.string.ColorUtil.format;
 
 public class TextareaManager {
-    private static final Map<UUID, TextareaInstance> RAON_TEXT_FIELD_MAP = new HashMap<>();
+    private static final Map<UUID, Textarea> RAON_TEXT_FIELD_MAP = new HashMap<>();
 
-    public static void setKey(Player player, TextareaInstance textarea) {
+    public static void setKey(Player player, Textarea textarea) {
         RAON_TEXT_FIELD_MAP.put(player.getUniqueId(), textarea);
         if (textarea.getInitHandler() != null)
             textarea.getInitHandler().onHandle(player);
@@ -54,7 +54,7 @@ public class TextareaManager {
             player.removePotionEffect(PotionEffectType.BLINDNESS);
     }
 
-    public static TextareaInstance findKey(Player player) {
+    public static Textarea findKey(Player player) {
         return RAON_TEXT_FIELD_MAP.get(player.getUniqueId());
     }
 
@@ -62,7 +62,7 @@ public class TextareaManager {
         return findKey(player) != null;
     }
 
-    public static List<TextareaInstance> getKeys() {
+    public static List<Textarea> getKeys() {
         return RAON_TEXT_FIELD_MAP.values().stream().toList();
     }
 }

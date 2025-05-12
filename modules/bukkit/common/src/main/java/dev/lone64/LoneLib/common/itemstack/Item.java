@@ -22,25 +22,25 @@ import java.util.List;
 import static dev.lone64.LoneLib.common.util.string.ColorUtil.format;
 
 @Getter
-public class ItemStackInstance {
+public class Item {
     private ItemStack itemStack;
 
-    public ItemStackInstance setMaterial(Material material) {
+    public Item setMaterial(Material material) {
         this.itemStack = new ItemStack(material, 1);
         return this;
     }
     
-    public ItemStackInstance setItem(ItemStack item) {
+    public Item setItem(ItemStack item) {
         this.itemStack = item;
         return this;
     }
     
-    public ItemStackInstance setAmount(int amount) {
+    public Item setAmount(int amount) {
         this.getItemStack().setAmount(amount);
         return this;
     }
     
-    public ItemStackInstance setName(String name) {
+    public Item setName(String name) {
         var itemMeta = this.getItemMeta();
         if (itemMeta == null) return this;
         itemMeta.setDisplayName(format(name));
@@ -48,7 +48,7 @@ public class ItemStackInstance {
         return this;
     }
     
-    public ItemStackInstance setLore(List<String> lore) {
+    public Item setLore(List<String> lore) {
         var itemMeta = this.getItemMeta();
         if (itemMeta == null) return this;
         itemMeta.setLore(format(lore));
@@ -56,7 +56,7 @@ public class ItemStackInstance {
         return this;
     }
     
-    public ItemStackInstance setDamage(int damage) {
+    public Item setDamage(int damage) {
         var itemMeta = (Damageable) this.getItemMeta();
         if (itemMeta == null) return this;
         itemMeta.setDamage(damage);
@@ -64,7 +64,7 @@ public class ItemStackInstance {
         return this;
     }
     
-    public ItemStackInstance setCustomModelData(int customModelData) {
+    public Item setCustomModelData(int customModelData) {
         var itemMeta = this.getItemMeta();
         if (itemMeta == null) return this;
         itemMeta.setCustomModelData(customModelData);
@@ -72,7 +72,7 @@ public class ItemStackInstance {
         return this;
     }
     
-    public ItemStackInstance setOwningPlayer(String owningPlayer) {
+    public Item setOwningPlayer(String owningPlayer) {
         var uuid = UUIDUtil.from(owningPlayer);
         if (uuid == null) return this;
         var itemMeta = (SkullMeta) this.getItemMeta();
@@ -85,11 +85,11 @@ public class ItemStackInstance {
         return this;
     }
     
-    public ItemStackInstance setOwningPlayer(OfflinePlayer owningPlayer) {
+    public Item setOwningPlayer(OfflinePlayer owningPlayer) {
         return setOwningPlayer(owningPlayer.getName());
     }
     
-    public ItemStackInstance setUnbreakable(boolean isUnbreakable) {
+    public Item setUnbreakable(boolean isUnbreakable) {
         var itemMeta = this.getItemMeta();
         if (itemMeta == null) return this;
         itemMeta.setUnbreakable(isUnbreakable);
@@ -97,7 +97,7 @@ public class ItemStackInstance {
         return this;
     }
     
-    public ItemStackInstance setLeatherColor(Color leatherColor) {
+    public Item setLeatherColor(Color leatherColor) {
         var type = this.getItemStack().getType();
         if (!(type == Material.LEATHER_HELMET || type == Material.LEATHER_CHESTPLATE || type == Material.LEATHER_LEGGINGS || type == Material.LEATHER_BOOTS))
             throw new IllegalArgumentException("color(Color) only applicable for leather armor.");
@@ -108,7 +108,7 @@ public class ItemStackInstance {
         return this;
     }
     
-    public ItemStackInstance setItemFlags(ItemFlag... itemFlags) {
+    public Item setItemFlags(ItemFlag... itemFlags) {
         var itemMeta = this.getItemMeta();
         if (itemMeta == null) return this;
         itemMeta.getItemFlags().forEach(itemMeta::removeItemFlags);
@@ -117,7 +117,7 @@ public class ItemStackInstance {
         return this;
     }
     
-    public ItemStackInstance setEnchantments(EnchantData... enchantments) {
+    public Item setEnchantments(EnchantData... enchantments) {
         var itemMeta = this.getItemMeta();
         if (itemMeta == null) return this;
         Arrays.stream(enchantments).forEach(enchant -> itemMeta.addEnchant(
@@ -127,7 +127,7 @@ public class ItemStackInstance {
         return this;
     }
     
-    public ItemStackInstance setAttributes(AttributeData... attributes) {
+    public Item setAttributes(AttributeData... attributes) {
         var itemMeta = this.getItemMeta();
         if (itemMeta == null) return this;
         Arrays.stream(attributes).forEach(attribute -> itemMeta.addAttributeModifier(
@@ -141,10 +141,10 @@ public class ItemStackInstance {
         return getItemStack().getItemMeta();
     }
 
-    public static ItemStackInstance loadItem(Material src) {
-        return new ItemStackInstance().setMaterial(src);
+    public static Item createItemStack(Material src) {
+        return new Item().setMaterial(src);
     }
-    public static ItemStackInstance loadItem(ItemStack src) {
-        return new ItemStackInstance().setItem(src);
+    public static Item createItemStack(ItemStack src) {
+        return new Item().setItem(src);
     }
 }

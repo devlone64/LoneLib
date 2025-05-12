@@ -35,15 +35,15 @@ public interface Paginate<T> {
         return items.get(getPage()) != null ? items.get(getPage()) : new ArrayList<>();
     }
 
-    static MaterialPage makeMaterial() {
+    static MaterialPage createMaterialPage() {
         return new MaterialPage();
     }
 
-    static ItemStackPage makeItem() {
+    static ItemStackPage createItemStackPage() {
         return new ItemStackPage();
     }
 
-    static <T> Paginate<T> makeCustom(Class<Paginate<T>> paginateClass) {
+    static <T> Paginate<T> createCustomPage(Class<? extends Paginate<T>> paginateClass) {
         try {
             return paginateClass.getConstructor().newInstance();
         } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {

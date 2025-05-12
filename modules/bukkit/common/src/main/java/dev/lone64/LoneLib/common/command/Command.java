@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 @Getter
-public class CommandInstance {
+public class Command {
     private Plugin plugin;
     private String name;
     private String usage = "/<command>";
@@ -26,67 +26,67 @@ public class CommandInstance {
     private final Map<MsgType, String> options = new HashMap<>();
     private final Map<String, Target<?>> commands = new HashMap<>();
 
-    public CommandInstance(Plugin plugin) {
+    public Command(Plugin plugin) {
         this(plugin, "");
     }
 
-    public CommandInstance(Plugin plugin, String name) {
+    public Command(Plugin plugin, String name) {
         this.plugin = plugin;
         this.name = name.toLowerCase();
     }
 
-    public CommandInstance setPlugin(Plugin plugin) {
+    public Command setPlugin(Plugin plugin) {
         this.plugin = plugin;
         return this;
     }
 
-    public CommandInstance setName(String name) {
+    public Command setName(String name) {
         this.name = name;
         return this;
     }
 
-    public CommandInstance setUsage(String usage) {
+    public Command setUsage(String usage) {
         this.usage = usage;
         return this;
     }
 
-    public CommandInstance setDescription(String description) {
+    public Command setDescription(String description) {
         this.description = description;
         return this;
     }
 
-    public CommandInstance setAliases(List<String> aliases) {
+    public Command setAliases(List<String> aliases) {
         this.aliases = aliases;
         return this;
     }
 
-    public CommandInstance setPermission(Permission permission) {
+    public Command setPermission(Permission permission) {
         this.permission = permission;
         return this;
     }
 
-    public CommandInstance setPermission(String node) {
+    public Command setPermission(String node) {
         this.permission.setNode(node);
         return this;
     }
 
-    public CommandInstance setPermission(String node, String message) {
+    public Command setPermission(String node, String message) {
         this.permission.setNode(node);
         this.permission.setMessage(message);
         return this;
     }
 
-    public CommandInstance setOption(MsgType type, String message) {
+    public Command setOption(MsgType type, String message) {
         this.options.put(type, message);
         return this;
     }
 
-    public CommandInstance onExecute(Target<?> target) {
+    public Command onExecute(Target<?> target) {
         this.target = target;
         return this;
     }
 
-    public CommandInstance onArgument(String name, Target<?> target) {
+    public Command onArgument(String name, Target<?> target) {
         this.commands.put(name, target);
         return this;
     }
@@ -95,7 +95,7 @@ public class CommandInstance {
         CommandUtil.register(this);
     }
 
-    public static CommandInstance loadCommand(Plugin plugin, String name) {
-        return new CommandInstance(plugin, name);
+    public static Command createCommand(Plugin plugin, String name) {
+        return new Command(plugin, name);
     }
 }
