@@ -23,7 +23,8 @@ public class ItemPersistentDataContainer implements PersistentDataContainer {
 
     @Override
     public <P, C> void set(String key, PersistentDataType<P, C> type, C value) {
-        var namespacedKey = NamespacedKey.fromString("LoneLib:%s".formatted(key));
+        key = key.replace("-", "_").replace(" ", "_").toLowerCase();
+        var namespacedKey = NamespacedKey.fromString("lonelib:%s".formatted(key));
         if (namespacedKey == null) throw new NullPointerException("NamespacedKey를 불러올 수 없습니다.");
         this.getItemMeta().getPersistentDataContainer().set(namespacedKey, type, value);
         this.getResult().setItemMeta(this.getItemMeta());
@@ -31,7 +32,8 @@ public class ItemPersistentDataContainer implements PersistentDataContainer {
 
     @Override
     public void remove(String key) {
-        var namespacedKey = NamespacedKey.fromString("LoneLib:%s".formatted(key));
+        key = key.replace("-", "_").replace(" ", "_").toLowerCase();
+        var namespacedKey = NamespacedKey.fromString("lonelib:%s".formatted(key));
         if (namespacedKey == null) throw new NullPointerException("NamespacedKey를 불러올 수 없습니다.");
         this.getItemMeta().getPersistentDataContainer().remove(namespacedKey);
         this.getResult().setItemMeta(this.getItemMeta());
@@ -39,21 +41,24 @@ public class ItemPersistentDataContainer implements PersistentDataContainer {
 
     @Override
     public <P, C> C get(String key, PersistentDataType<P, C> type) {
-        var namespacedKey = NamespacedKey.fromString("LoneLib:%s".formatted(key));
+        key = key.replace("-", "_").replace(" ", "_").toLowerCase();
+        var namespacedKey = NamespacedKey.fromString("lonelib:%s".formatted(key));
         if (namespacedKey == null) throw new NullPointerException("NamespacedKey를 불러올 수 없습니다.");
         return this.getItemMeta().getPersistentDataContainer().get(namespacedKey, type);
     }
 
     @Override
     public boolean has(String key) {
-        var namespacedKey = NamespacedKey.fromString("LoneLib:%s".formatted(key));
+        key = key.replace("-", "_").replace(" ", "_").toLowerCase();
+        var namespacedKey = NamespacedKey.fromString("lonelib:%s".formatted(key));
         if (namespacedKey == null) throw new NullPointerException("NamespacedKey를 불러올 수 없습니다.");
         return this.getItemMeta().getPersistentDataContainer().has(namespacedKey);
     }
 
     @Override
     public <P, C> boolean has(String key, PersistentDataType<P, C> type) {
-        var namespacedKey = NamespacedKey.fromString("LoneLib:%s".formatted(key));
+        key = key.replace("-", "_").replace(" ", "_").toLowerCase();
+        var namespacedKey = NamespacedKey.fromString("lonelib:%s".formatted(key));
         if (namespacedKey == null) throw new NullPointerException("NamespacedKey를 불러올 수 없습니다.");
         return this.getItemMeta().getPersistentDataContainer().has(namespacedKey, type);
     }

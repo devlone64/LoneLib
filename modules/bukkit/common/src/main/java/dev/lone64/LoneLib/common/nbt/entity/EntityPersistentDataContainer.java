@@ -23,43 +23,46 @@ public class EntityPersistentDataContainer implements PersistentDataContainer {
 
     @Override
     public <P, C> void set(String key, PersistentDataType<P, C> type, C value) {
-        var namespacedKey = NamespacedKey.fromString("LoneLib:%s".formatted(key));
+        key = key.replace("-", "_").replace(" ", "_").toLowerCase();
+        var namespacedKey = NamespacedKey.fromString("lonelib:%s".formatted(key));
         Objects.requireNonNull(namespacedKey, "NamespacedKey를 불러올 수 없습니다.");
         this.getEntity().getPersistentDataContainer().set(namespacedKey, type, value);
     }
 
     @Override
     public void remove(String key) {
-        var namespacedKey = NamespacedKey.fromString("LoneLib:%s".formatted(key));
+        key = key.replace("-", "_").replace(" ", "_").toLowerCase();
+        var namespacedKey = NamespacedKey.fromString("lonelib:%s".formatted(key));
         if (namespacedKey == null) throw new NullPointerException("NamespacedKey를 불러올 수 없습니다.");
         this.getEntity().getPersistentDataContainer().remove(namespacedKey);
     }
 
     @Override
     public <P, C> C get(String key, PersistentDataType<P, C> type) {
-        var namespacedKey = NamespacedKey.fromString("LoneLib:%s".formatted(key));
+        key = key.replace("-", "_").replace(" ", "_").toLowerCase();
+        var namespacedKey = NamespacedKey.fromString("lonelib:%s".formatted(key));
         if (namespacedKey == null) throw new NullPointerException("NamespacedKey를 불러올 수 없습니다.");
         return this.getEntity().getPersistentDataContainer().get(namespacedKey, type);
     }
 
     @Override
     public boolean has(String key) {
-        var namespacedKey = NamespacedKey.fromString("LoneLib:%s".formatted(key));
+        key = key.replace("-", "_").replace(" ", "_").toLowerCase();
+        var namespacedKey = NamespacedKey.fromString("lonelib:%s".formatted(key));
         if (namespacedKey == null) throw new NullPointerException("NamespacedKey를 불러올 수 없습니다.");
         return this.getEntity().getPersistentDataContainer().has(namespacedKey);
     }
 
     @Override
     public <P, C> boolean has(String key, PersistentDataType<P, C> type) {
-        var namespacedKey = NamespacedKey.fromString("LoneLib:%s".formatted(key));
+        key = key.replace("-", "_").replace(" ", "_").toLowerCase();
+        var namespacedKey = NamespacedKey.fromString("lonelib:%s".formatted(key));
         if (namespacedKey == null) throw new NullPointerException("NamespacedKey를 불러올 수 없습니다.");
         return this.getEntity().getPersistentDataContainer().has(namespacedKey, type);
     }
 
     @Override
     public void setString(String key, String value) {
-        var namespacedKey = NamespacedKey.fromString("LoneLib:%s".formatted(key));
-        if (namespacedKey == null) throw new NullPointerException("NamespacedKey를 불러올 수 없습니다.");
         this.set(key, PersistentDataType.STRING, value);
     }
 
