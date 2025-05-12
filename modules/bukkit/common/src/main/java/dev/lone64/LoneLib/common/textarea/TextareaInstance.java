@@ -105,7 +105,7 @@ public class TextareaInstance {
         boolean onHandle(Player sender, String value);
     }
 
-    public static TextareaInstance getInstance() {
+    public static TextareaInstance loadTextarea() {
         return new TextareaInstance();
     }
 }

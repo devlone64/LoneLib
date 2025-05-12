@@ -7,7 +7,7 @@ import java.lang.reflect.InvocationTargetException;
 
 @SuppressWarnings("unchecked")
 public class MenuInstance {
-    public static Menu<?> fetch(Class<?> menuClass, Player sender) {
+    public static Menu<?> loadMenu(Class<?> menuClass, Player sender) {
         try {
             return ((Class<Menu<?>>) menuClass).getConstructor(Player.class).newInstance(sender);
         } catch (InvocationTargetException | InstantiationException | IllegalAccessException | NoSuchMethodException e) {

@@ -95,7 +95,7 @@ public class CommandInstance {
         CommandUtil.register(this);
     }
 
-    public static CommandInstance fetch(Plugin plugin, String name) {
+    public static CommandInstance loadCommand(Plugin plugin, String name) {
         return new CommandInstance(plugin, name);
     }
 }
