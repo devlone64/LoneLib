@@ -52,84 +52,133 @@ public class YamlConfig {
         return file.exists();
     }
 
-    public void set(String key, Object value) {
+    public void set(String path, Object value) {
         try {
-            this.config.set(key, value != null ? serialize(value) : null);
+            this.config.set(path, value);
             this.config.save(this.file);
         } catch (IOException e) {
-            throw new IllegalArgumentException("An error occurred while saving config: %s".formatted(key), e);
+            throw new IllegalArgumentException("An error occurred while saving config: %s".formatted(path), e);
         }
     }
 
-    public void setIfAbuse(String key, Object value) {
-        if (!contains(key)) set(key, value);
+    public void add(String path, Object value) {
+        if (!this.contains(path)) this.set(path, value);
     }
 
-    public Object get(String key) {
-        Object value = config.get(key);
-        if (value == null) return null;
-        return deserialize(value);
+    public Object get(String path) {
+        return this.config.get(path);
     }
 
-    public String getString(String key) {
-        return get(key).toString();
+    public Object get(String path, Object def) {
+        if (!this.contains(path)) return def;
+        return this.get(path);
     }
 
-    public int getInt(String key) {
-        return (int) get(key);
+    public String getString(String path) {
+        return this.config.getString(path);
     }
 
-    public double getDouble(String key) {
-        return (double) get(key);
+    public String getString(String path, String def) {
+        if (!this.contains(path)) return def;
+        return this.getString(path);
     }
 
-    public long getLong(String key) {
-        return (long) get(key);
+    public int getInt(String path) {
+        return this.config.getInt(path);
     }
 
-    public boolean getBoolean(String key) {
-        return (boolean) get(key);
+    public int getInt(String path, int def) {
+        if (!this.contains(path)) return def;
+        return this.getInt(path);
     }
 
-    public Enum<?> getEnum(String key) {
-        return (Enum<?>) get(key);
+    public double getDouble(String path) {
+        return this.config.getDouble(path);
     }
 
-    public UUID getUUID(String key) {
-        return (UUID) get(key);
+    public double getDouble(String path, double def) {
+        if (!this.contains(path)) return def;
+        return this.getDouble(path);
     }
 
-    public Location getLocation(String key) {
-        return (Location) get(key);
+    public long getLong(String path) {
+        return this.config.getLong(path);
     }
 
-    public boolean contains(String key) {
-        return config.contains(key);
+    public long getLong(String path, long def) {
+        if (!this.contains(path)) return def;
+        return this.getLong(path);
     }
 
-    public List<?> getList(String key) {
-        return config.getList(key);
+    public boolean getBoolean(String path) {
+        return this.config.getBoolean(path);
     }
 
-    public List<?> getList(String key, List<?> def) {
-        return config.getList(key, def);
+    public boolean getBoolean(String path, boolean def) {
+        if (!this.contains(path)) return def;
+        return this.getBoolean(path);
     }
 
-    public List<String> getStringList(String key) {
-        return config.getStringList(key);
+    public Enum<?> getEnum(String path) {
+        return EnumUtil.from(Enum.class, this.getString(path).toUpperCase());
     }
 
-    public List<String> getKeys() {
+    public Enum<?> getEnum(String path, Enum<?> def) {
+        if (!this.contains(path)) return def;
+        return this.getEnum(path);
+    }
+
+    public UUID getUUID(String path) {
+        return UUID.fromString(this.getString(path));
+    }
+
+    public UUID getUUID(String path, UUID def) {
+        if (!this.contains(path)) return def;
+        return this.getUUID(path);
+    }
+
+    public Location getLocation(String path) {
+        return LocationUtil.deserialize(this.getString(path));
+    }
+
+    public Location getLocation(String path, Location def) {
+        if (!this.contains(path)) return def;
+        return this.getLocation(path);
+    }
+
+    public boolean contains(String path) {
+        return config.contains(path);
+    }
+
+    public List<?> getList(String path) {
+        return config.getList(path);
+    }
+
+    public List<?> getList(String path, List<?> def) {
+        if (!this.contains(path)) return def;
+        return this.getList(path);
+    }
+
+    public List<String> getStringList(String path) {
+        return config.getStringList(path);
+    }
+
+    public List<String> getStringList(String path, List<String> def) {
+        if (!this.contains(path)) return def;
+        return config.getStringList(path);
+    }
+
+    public List<String> getArrays() {
         return config.getKeys(false).stream().toList();
     }
 
-    public List<String> getKeys(String key) {
-        var section = config.getConfigurationSection(key);
+    public List<String> getArrays(String path) {
+        var section = config.getConfigurationSection(path);
         if (section == null) return new ArrayList<>();
         return section.getKeys(false).stream().toList();
     }
 
-    public List<String> getFiles() {
+    public List<String> list() {
         var arrays = new ArrayList<String>();
         var files = this.file.list();
         if (files != null) {
@@ -138,23 +187,5 @@ public class YamlConfig {
             }
         }
         return arrays;
-    }
-
-    private Object serialize(Object value) {
-        Class<?> type = value.getClass();
-        if (type.isEnum()) return EnumUtil.to(value);
-        else if (type == UUID.class) return value.toString();
-        else if (type == Location.class) return LocationUtil.serialize((Location) value);
-        else if (value instanceof ConfigurationSerializable serializable) return serializable.serialize();
-        return value;
-    }
-
-    private Object deserialize(Object value) {
-        Class<?> type = value.getClass();
-        if (type.isEnum()) return EnumUtil.from(type, value.toString());
-        else if (type == UUID.class) return UUID.fromString(value.toString());
-        else if (type == Location.class) return LocationUtil.deserialize(value.toString());
-        else if (value instanceof ConfigurationSection section) return ConfigurationSerialization.deserializeObject(section.getValues(false), type.asSubclass(ConfigurationSerializable.class));
-        return value;
     }
 }
