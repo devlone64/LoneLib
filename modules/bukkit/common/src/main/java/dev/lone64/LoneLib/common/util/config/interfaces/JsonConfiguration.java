@@ -178,8 +178,10 @@ public interface JsonConfiguration {
 
         @Override
         public void set(String key, JsonElement value) {
+            this.config = this.config != null ? this.config : new JsonObject();
+
+            var current = this.config;
             var parts = key.split("\\.");
-            var current = this.config != null ? this.config : new JsonObject();
             for (int i = 0; i < parts.length - 1; i++) {
                 var part = parts[i];
                 if (!current.has(part) || !current.get(part).isJsonObject()) {
@@ -234,8 +236,10 @@ public interface JsonConfiguration {
 
         @Override
         public void remove(String key) {
+            this.config = this.config != null ? this.config : new JsonObject();
+
+            var current = this.config;
             var parts = key.split("\\.");
-            var current = this.config != null ? this.config : new JsonObject();
             for (int i = 0; i < parts.length - 1; i++) {
                 var part = parts[i];
                 if (!current.has(part) || !current.get(part).isJsonObject()) {
@@ -279,8 +283,10 @@ public interface JsonConfiguration {
 
         @Override
         public JsonElement get(String key, JsonElement def) {
+            this.config = this.config != null ? this.config : new JsonObject();
+
+            var current = this.config;
             var parts = key.split("\\.");
-            var current = this.config != null ? this.config : new JsonObject();
             for (int i = 0; i < parts.length - 1; i++) {
                 var part = parts[i];
                 if (!current.has(part) || !current.get(part).isJsonObject()) {
@@ -394,8 +400,10 @@ public interface JsonConfiguration {
 
         @Override
         public boolean has(String key) {
+            this.config = this.config != null ? this.config : new JsonObject();
+
+            var current = this.config;
             var parts = key.split("\\.");
-            var current = this.config != null ? this.config : new JsonObject();
             for (int i = 0; i < parts.length - 1; i++) {
                 var part = parts[i];
                 if (!current.has(part) || !current.get(part).isJsonObject()) {
