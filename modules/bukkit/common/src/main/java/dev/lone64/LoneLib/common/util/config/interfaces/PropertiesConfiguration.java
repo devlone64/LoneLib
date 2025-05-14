@@ -55,14 +55,14 @@ public interface PropertiesConfiguration {
 
         public PropertiesConfigurationImpl(Plugin plugin, String path) {
             super(plugin, path);
-            var resource = PropertiesUtil.loadProperties(this.getPlugin(), this.getPath());
-            this.config = resource != null ? resource : new Properties();
+            var file = PropertiesUtil.loadProperties(this.getFile());
+            this.config = file != null ? file : new Properties();
         }
 
         public PropertiesConfigurationImpl(Plugin plugin, String dir, String path) {
             super(plugin, dir, path);
-            var resource = PropertiesUtil.loadProperties(this.getPlugin(), this.getPath());
-            this.config = resource != null ? resource : new Properties();
+            var file = PropertiesUtil.loadProperties(this.getFile());
+            this.config = file != null ? file : new Properties();
         }
 
         @Override
