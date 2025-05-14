@@ -18,6 +18,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 
 import static dev.lone64.LoneLib.common.util.string.ColorUtil.format;
 
@@ -41,99 +42,115 @@ public class Item {
     }
     
     public Item setName(String name) {
-        var itemMeta = this.getItemMeta();
-        if (itemMeta == null) return this;
-        itemMeta.setDisplayName(format(name));
-        this.getItemStack().setItemMeta(itemMeta);
+        var meta = this.getItemMeta();
+        if (meta == null) return this;
+        meta.setDisplayName(format(name));
+        this.getItemStack().setItemMeta(meta);
         return this;
     }
-    
+
     public Item setLore(List<String> lore) {
-        var itemMeta = this.getItemMeta();
-        if (itemMeta == null) return this;
-        itemMeta.setLore(format(lore));
-        this.getItemStack().setItemMeta(itemMeta);
+        var meta = this.getItemMeta();
+        if (meta == null) return this;
+        meta.setLore(format(lore));
+        this.getItemStack().setItemMeta(meta);
         return this;
     }
-    
+
     public Item setDamage(int damage) {
-        var itemMeta = (Damageable) this.getItemMeta();
-        if (itemMeta == null) return this;
-        itemMeta.setDamage(damage);
-        this.getItemStack().setItemMeta(itemMeta);
+        var meta = (Damageable) this.getItemMeta();
+        if (meta == null) return this;
+        meta.setDamage(damage);
+        this.getItemStack().setItemMeta(meta);
         return this;
     }
-    
+
     public Item setCustomModelData(int customModelData) {
-        var itemMeta = this.getItemMeta();
-        if (itemMeta == null) return this;
-        itemMeta.setCustomModelData(customModelData);
-        this.getItemStack().setItemMeta(itemMeta);
+        var meta = this.getItemMeta();
+        if (meta == null) return this;
+        meta.setCustomModelData(customModelData);
+        this.getItemStack().setItemMeta(meta);
         return this;
     }
-    
+
     public Item setOwningPlayer(String owningPlayer) {
         var uuid = UUIDUtil.from(owningPlayer);
         if (uuid == null) return this;
-        var itemMeta = (SkullMeta) this.getItemMeta();
-        if (itemMeta == null) return this;
+        var meta = (SkullMeta) this.getItemMeta();
+        if (meta == null) return this;
         if (NmsVersion.getCurrentVersion().isNewHead()) {
             var offlinePlayer = Bukkit.getOfflinePlayer(uuid);
-            itemMeta.setOwningPlayer(offlinePlayer);
-        } else itemMeta.setOwner(owningPlayer);
-        this.getItemStack().setItemMeta(itemMeta);
+            meta.setOwningPlayer(offlinePlayer);
+        } else meta.setOwner(owningPlayer);
+        this.getItemStack().setItemMeta(meta);
         return this;
     }
-    
+
     public Item setOwningPlayer(OfflinePlayer owningPlayer) {
         return setOwningPlayer(owningPlayer.getName());
     }
-    
+
     public Item setUnbreakable(boolean isUnbreakable) {
-        var itemMeta = this.getItemMeta();
-        if (itemMeta == null) return this;
-        itemMeta.setUnbreakable(isUnbreakable);
-        this.getItemStack().setItemMeta(itemMeta);
+        var meta = this.getItemMeta();
+        if (meta == null) return this;
+        meta.setUnbreakable(isUnbreakable);
+        this.getItemStack().setItemMeta(meta);
         return this;
     }
-    
+
+    public Item setHideTooltip(boolean hideTooltip) {
+        var meta = this.getItemMeta();
+        if (meta == null) return this;
+        meta.setHideTooltip(hideTooltip);
+        this.getItemStack().setItemMeta(meta);
+        return this;
+    }
+
     public Item setLeatherColor(Color leatherColor) {
         var type = this.getItemStack().getType();
         if (!(type == Material.LEATHER_HELMET || type == Material.LEATHER_CHESTPLATE || type == Material.LEATHER_LEGGINGS || type == Material.LEATHER_BOOTS))
             throw new IllegalArgumentException("color(Color) only applicable for leather armor.");
-        var itemMeta = (LeatherArmorMeta) this.getItemMeta();
-        if (itemMeta == null) return this;
-        itemMeta.setColor(leatherColor);
-        this.getItemStack().setItemMeta(itemMeta);
+        var meta = (LeatherArmorMeta) this.getItemMeta();
+        if (meta == null) return this;
+        meta.setColor(leatherColor);
+        this.getItemStack().setItemMeta(meta);
         return this;
     }
-    
+
     public Item addItemFlags(ItemFlag... itemFlags) {
-        var itemMeta = this.getItemMeta();
-        if (itemMeta == null) return this;
-        itemMeta.addItemFlags(itemFlags);
-        this.getItemStack().setItemMeta(itemMeta);
+        var meta = this.getItemMeta();
+        if (meta == null) return this;
+        meta.addItemFlags(itemFlags);
+        this.getItemStack().setItemMeta(meta);
         return this;
     }
-    
+
     public Item setEnchantments(EnchantData... enchantments) {
-        var itemMeta = this.getItemMeta();
-        if (itemMeta == null) return this;
-        Arrays.stream(enchantments).forEach(enchant -> itemMeta.addEnchant(
+        var meta = this.getItemMeta();
+        if (meta == null) return this;
+        Arrays.stream(enchantments).forEach(enchant -> meta.addEnchant(
                 enchant.getEnchantment(), enchant.getStage(), enchant.isState()
         ));
-        this.getItemStack().setItemMeta(itemMeta);
+        this.getItemStack().setItemMeta(meta);
         return this;
     }
-    
+
     public Item setAttributes(AttributeData... attributes) {
-        var itemMeta = this.getItemMeta();
-        if (itemMeta == null) return this;
-        Arrays.stream(attributes).forEach(attribute -> itemMeta.addAttributeModifier(
+        var meta = this.getItemMeta();
+        if (meta == null) return this;
+        Arrays.stream(attributes).forEach(attribute -> meta.addAttributeModifier(
                 attribute.getAttribute(), attribute.getAttributeModifier()
         ));
-        this.getItemStack().setItemMeta(itemMeta);
+        this.getItemStack().setItemMeta(meta);
         return this;
+    }
+
+    public ItemStack apply(Consumer<ItemMeta> consumer) {
+        var meta = this.getItemMeta();
+        if (meta == null) return this.getItemStack();
+        consumer.accept(meta);
+        this.getItemStack().setItemMeta(meta);
+        return this.getItemStack();
     }
 
     public ItemMeta getItemMeta() {
