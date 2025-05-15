@@ -6,6 +6,7 @@ import dev.lone64.LoneLib.common.util.location.LocationUtil;
 import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
@@ -50,6 +51,15 @@ public class YamlConfig {
 
     public boolean exists() {
         return file.exists();
+    }
+
+    public boolean load() {
+        try {
+            this.config.load(this.file);
+            return true;
+        } catch (IOException | InvalidConfigurationException e) {
+            return false;
+        }
     }
 
     public void set(String path, Object value) {
