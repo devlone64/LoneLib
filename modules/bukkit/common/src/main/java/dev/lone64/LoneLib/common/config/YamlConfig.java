@@ -23,7 +23,8 @@ public class YamlConfig {
     private final File file;
     private final String path;
     private final Plugin plugin;
-    private final YamlConfiguration config;
+
+    private YamlConfiguration config;
 
     public YamlConfig(Plugin plugin, String dir, String path) {
         this.plugin = plugin;
@@ -53,13 +54,8 @@ public class YamlConfig {
         return file.exists();
     }
 
-    public boolean load() {
-        try {
-            this.config.load(this.file);
-            return true;
-        } catch (IOException | InvalidConfigurationException e) {
-            return false;
-        }
+    public void load() {
+        this.config = YamlConfiguration.loadConfiguration(this.file);
     }
 
     public void set(String path, Object value) {
