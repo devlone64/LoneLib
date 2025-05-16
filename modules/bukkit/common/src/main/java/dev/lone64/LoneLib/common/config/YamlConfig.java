@@ -105,6 +105,10 @@ public class YamlConfig {
         this.set(path, value.stream().map(World::getName).toList());
     }
 
+    public void setEntityList(String path, List<Entity> value) {
+        this.setUUIDList(path, value.stream().map(Entity::getUniqueId).toList());
+    }
+
     public void setLocationList(String path, List<Location> value) {
         this.set(path, value.stream().map(LocationUtil::serialize).toList());
     }
@@ -147,6 +151,10 @@ public class YamlConfig {
 
     public void addWorldList(String path, List<World> value) {
         this.add(path, value.stream().map(World::getName).toList());
+    }
+
+    public void addEntityList(String path, List<Entity> value) {
+        this.addUUIDList(path, value.stream().map(Entity::getUniqueId).toList());
     }
 
     public void addLocationList(String path, List<Location> value) {
@@ -275,11 +283,11 @@ public class YamlConfig {
     }
 
     public boolean contains(String path) {
-        return config.contains(path);
+        return this.config.contains(path);
     }
 
     public List<?> getList(String path) {
-        return config.getList(path);
+        return this.config.getList(path);
     }
 
     public List<?> getList(String path, List<?> def) {
@@ -288,20 +296,110 @@ public class YamlConfig {
     }
 
     public List<String> getStringList(String path) {
-        return config.getStringList(path);
+        return this.config.getStringList(path);
     }
 
     public List<String> getStringList(String path, List<String> def) {
         if (!this.contains(path)) return def;
-        return config.getStringList(path);
+        return this.getStringList(path);
     }
 
-    public List<String> getArrays() {
-        return config.getKeys(false).stream().toList();
+    public List<Integer> getIntegerList(String path) {
+        return this.config.getIntegerList(path);
     }
 
-    public List<String> getArrays(String path) {
-        var section = config.getConfigurationSection(path);
+    public List<Integer> getIntegerList(String path, List<Integer> def) {
+        if (!this.contains(path)) return def;
+        return this.getIntegerList(path);
+    }
+
+    public List<Double> getDoubleList(String path) {
+        return this.config.getDoubleList(path);
+    }
+
+    public List<Double> getDoubleList(String path, List<Double> def) {
+        if (!this.contains(path)) return def;
+        return this.getDoubleList(path);
+    }
+
+    public List<Float> getFloatList(String path) {
+        return this.config.getFloatList(path);
+    }
+
+    public List<Float> getFloatList(String path, List<Float> def) {
+        if (!this.contains(path)) return def;
+        return this.getFloatList(path);
+    }
+
+    public List<Long> getLongList(String path) {
+        return this.config.getLongList(path);
+    }
+
+    public List<Long> getLongList(String path, List<Long> def) {
+        if (!this.contains(path)) return def;
+        return this.getLongList(path);
+    }
+
+    public List<Boolean> getBooleanList(String path) {
+        return this.config.getBooleanList(path);
+    }
+
+    public List<Boolean> getBooleanList(String path, List<Boolean> def) {
+        if (!this.contains(path)) return def;
+        return this.getBooleanList(path);
+    }
+
+    public List<UUID> getUUIDList(String path) {
+        return this.getStringList(path).stream().map(UUID::fromString).toList();
+    }
+
+    public List<UUID> getUUIDList(String path, List<UUID> def) {
+        if (!this.contains(path)) return def;
+        return this.getUUIDList(path);
+    }
+
+    public List<World> getWorldList(String path) {
+        return this.getStringList(path).stream().map(Bukkit::getWorld).toList();
+    }
+
+    public List<World> getWorldList(String path, List<World> def) {
+        if (!this.contains(path)) return def;
+        return this.getWorldList(path);
+    }
+
+    public List<Entity> getEntityList(String path) {
+        return this.getUUIDList(path).stream().map(Bukkit::getEntity).toList();
+    }
+
+    public List<Entity> getEntityList(String path, List<Entity> def) {
+        if (!this.contains(path)) return def;
+        return this.getEntityList(path);
+    }
+
+    public List<Location> getLocationList(String path) {
+        return this.getStringList(path).stream().map(LocationUtil::deserialize).toList();
+    }
+
+    public List<Location> getLocationList(String path, List<Location> def) {
+        if (!this.contains(path)) return def;
+        return this.getLocationList(path);
+    }
+
+    public List<ItemStack> getItemStackList(String path) {
+        return this.getStringList(path).stream().map(ItemUtil::deserialize).toList();
+    }
+
+    public List<ItemStack> getItemStackList(String path, List<ItemStack> def) {
+        if (!this.contains(path)) return def;
+        return this.getItemStackList(path);
+    }
+
+    public List<String> getConfigurationKeys() {
+        return this.config.getKeys(false).stream().toList();
+    }
+
+    public List<String> getConfigurationKeys(String path) {
+        var section = this.config.getConfigurationSection(path);
         if (section == null) return new ArrayList<>();
         return section.getKeys(false).stream().toList();
     }
